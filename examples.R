@@ -1,6 +1,6 @@
 ## tips.R
-## Author: RenÈ Locher
-## Version: 2017-03-29
+## Author: Ren√© Locher
+## Version: 2017-11-03
 
 pathIn <- "dat/"
 
@@ -130,10 +130,10 @@ objects(pattern="^[^\\.]",all.names = TRUE)
 
 
 ## Umlaute
-print("‰ˆ¸")
+print("√§√∂√º")
 
 ## geht nicht (mehr?) korrekt in emacs!!
-plot(rnorm(100),main = "‰ˆ¸")
+plot(rnorm(100),main = "√§√∂√º")
 
 ## redirecting output
 sink(file = "test.txt")
@@ -226,7 +226,7 @@ iconvlist()
 localeToCharset()
 
 ## uses system facilities to convert a character vector between encodings: the 'i' stands for 'internationalization'
-enc2utf8("‹")
+enc2utf8("√ú")
 
 x <- "fa\xE7ile"
 Encoding(x)
@@ -403,7 +403,7 @@ is.element(x,0:10)
 match(c(4:5,11),0:10)
 
 ## scope of objects, lexical scoping
-## G¸ltigkeitsbereich
+## G√ºltigkeitsbereich
 
 xx <- 10
 
@@ -621,7 +621,7 @@ axis(1)
 axis(2,at = 1,label = "ja", las = 1)
 
 ## bquote for partial substitution
-y <- paste(letters[1:4],"x",sep = ".")
+y <- paste(letters[1:4], "x", sep = ".")
 bquote(y == .(y))
 
 a <- 2
@@ -651,14 +651,14 @@ unique(x)
 
 ifelse(x > 4,"yes","no")
 
-unique(data.frame(A = c(1:3, 3),B = c(1:3, 3)))
+unique(data.frame(A = c(1:3, 3), B = c(1:3, 3)))
 
 
 
 ##################################################################
 ## Memory problems
 
-## garbage collection: r‰umt Memory auf
+## garbage collection: r√§umt Memory auf
 gc()
 ## Ncells: fixer Variablenraum in MB
 ## Vcells: dynamischer Variablenraum in MB (heap)
@@ -804,25 +804,25 @@ plot(rnorm(20))
 savePlot(filename = "E:\\lor\\test", type = "wmf")
 
 ## Lossles compression: 10kB
-## Empfohlenes Device f¸r Punkt- und Liniengrafiken f¸r Import nach Word
+## Empfohlenes Device f√ºr Punkt- und Liniengrafiken f√ºr Import nach Word
 png(file = "10x10.png", width = 10, height = 10, unit = "cm", res = 300, pointsize = 10)
 plot(rnorm(100), col = col)
 dev.off()
 
-## Komprimierung mit Qualit‰t 75%: 34kB
+## Komprimierung mit Qualit√§t 75%: 34kB
 jpeg(file = "10x10.jpg", width = 10, height = 10, unit = "cm", res = 300,
      quality = 75, pointsize = 10)
 plot(rnorm(100), col = col)
 dev.off()
 
 ## Verlustfrei komprimiert und vektorbasiert abgespeichert: 6kB
-## Empfohlenes Device f¸r Latex
+## Empfohlenes Device f√ºr Latex
 inch <- 2.54
 pdf(file = "10x10.pdf", width = 10/inch, height = 10/inch, pointsize = 10)
 plot(rnorm(100), col = col)
 dev.off()
 
-## f¸r 26"-Bildschirm von Dell
+## f√ºr 26"-Bildschirm von Dell
 xpinch <- 2560/60*inch
 ypinch <- 1440/34*inch
 windows(width = 10/inch, height = 10/inch, xpinch = xpinch, ypinch = ypinch)
@@ -879,7 +879,7 @@ validate.lrm()    ## Resampling Validation of a Logistic Model
 ## Input - Output
 ## Transfer von Daten aus S-Plus nach R
 library("MASS")
-write.matrix(cbind(sz.Ox.f,lu.Ox.f,ef.Ox.f,sz.O3.f,lu.O3.f,ef.O3.f),
+write.matrix(cbind(sz.Ox.f, lu.Ox.f, ef.Ox.f, sz.O3.f, lu.O3.f, ef.O3.f),
              file = "E:\\S6\\Plausib4\\OxO3.dat")
 
 OxO3.dat <- read.table(file = "E:\\S6\\Plausib4\\OxO3.dat",header = T)
@@ -1792,7 +1792,7 @@ paste0("ab","[.]","cd")## workaround
 print("\344 \304 \366 \326 \374 \334 \265")
 
 ## Umlaute work
-regexpr("¸", c("Gr¸sch", "Buh"))
+regexpr("√º", c("Gr√ºsch", "Buh"))
 
 cat("CR \n this will be wiped out\r LF \n newline\n")
 
@@ -1801,9 +1801,9 @@ print("CR \n this will NOT be wiped out\r LF \n newline\n")
 print("CR \012 this will NOT be wiped out\015 LF \012 newline\n")
 ## \012 = CR \015 = LF
 
-## Umlaute, e.g. ˆ
+## Umlaute, e.g. √∂
 plot(rnorm(10), xlab = "\366\366")
-plot(rnorm(10), xlab = "ˆˆ")
+plot(rnorm(10), xlab = "√∂√∂")
 ## Be careful with GUIs like emacs!!
 
 
@@ -1811,12 +1811,12 @@ plot(rnorm(10), xlab = "ˆˆ")
 library(sfsmisc)
 library(help = sfsmisc)
 
-AsciiToInt("‰")
-AsciiToInt("ˆ")
+AsciiToInt("√§")
+AsciiToInt("√∂")
 AsciiToInt(a)
-strcodes("‰ˆ")
+strcodes("√§√∂")
 
-print("‰")
+print("√§")
 
 AsciiToInt("o")
 chars8bit(111)
@@ -1824,8 +1824,8 @@ AsciiToInt("A")
 chars8bit(65)
 
 chars8bit(AsciiToInt("A"))
-chars8bit(AsciiToInt("µ"))
-AsciiToInt("µ")
+chars8bit(AsciiToInt("¬µ"))
+AsciiToInt("¬µ")
 
 ## greek letters and Formulas
 ## for spelling for greek letters see
@@ -2054,7 +2054,7 @@ decide("z")
 
 
 ## ----------------------------------------
-## draw back gem‰ss uth:
+## draw back gem√§ss uth:
 ## Fenster, welche out-of-focus waren, werden erst neu gezeichnet, wenn
 ## man sie wieder anklickt.
 
@@ -2144,7 +2144,7 @@ library(widgetTools)
 library(gWidgets)
 
 #####
-## uth zieht f¸r windows graph apps und R-com/R-Excel vor.
+## uth zieht f√ºr windows graph apps und R-com/R-Excel vor.
 
 ## R as Click-Tool
 ## the following code works correctly only in R-GUI and best with R --sdi
@@ -2215,7 +2215,7 @@ dat[100:105,c(2,70:77)]
 
 close(XLS1)
 ## Quelle ist in R zwar nicht mehr ansprechbar aber in Excel immer noch
-## schreibgesch¸tzt
+## schreibgesch√ºtzt
 
 ###
 ## reading data via Proxy
@@ -2310,10 +2310,10 @@ lines(RLMM[,1],col = "red")
 
 str(summary(lm(y~x,xy)))
 
-## robuster Lokationssch‰tzer
+## robuster Lokationssch√§tzer
 huber()
 
-## Vorsicht: hubers() gibt defaultm‰ssig zu wenig robuste Erwartungswerte
+## Vorsicht: hubers() gibt defaultm√§ssig zu wenig robuste Erwartungswerte
 
 ## no tests implemented for modelselection in MASS
 ## alpha-version
@@ -2437,7 +2437,7 @@ dummy.coef(aov(y~x,data = kon))[[2]]+dummy.coef(aov(y~x,data = kon))[[1]] #QED
 
 r.def <- lm(y~x,data = kon)
 
-## dummy.coef funktioniert nur f¸r contrast = contr.treatment
+## dummy.coef funktioniert nur f√ºr contrast = contr.treatment
 dummy.coef(r.def)
 dummy.coef(r.def)[[2]]+dummy.coef(r.def)[[1]]
 summary(r.def,cor = F)
@@ -2463,7 +2463,7 @@ summary(r.treat,cor = F)$coefficients
 dummy.coef(r.def)[[2]]-dummy.coef(r.def)[[2]][1]
 contr.treatment(3) %*% summary(r.treat,cor = F)$coefficients[2:3]
 
-                                        # Polynomiale Kontraste machen nur bei ‰quidistanten geordneten Faktoren
+                                        # Polynomiale Kontraste machen nur bei √§quidistanten geordneten Faktoren
                                         # mit ausbalancierten Daten Sinn
 contr.poly(3)
 summary(r.poly,cor = F)$coefficients
@@ -2477,8 +2477,8 @@ summary(r.sum,cor = F)$coefficients
 dummy.coef(r.def)[[2]]
 contr.sum(3)%*%summary(r.sum,cor = F)$coefficients[2:3]
 
-                                        # mit verallgemeinerten Inversen kˆnnen die Kontraste mit
-                                        # dummy-Koeffizienten ausgedr¸ckt werden:
+                                        # mit verallgemeinerten Inversen k√∂nnen die Kontraste mit
+                                        # dummy-Koeffizienten ausgedr√ºckt werden:
 library(haplo.score)
 Ginv(contr.sum(3))$Ginv %*% dummy.coef(r.def)[[2]]
 
@@ -2602,13 +2602,13 @@ ll1[1:2]
 sapply(ll1, sum)
 
 ########################
-## Bestimme das beste Subset der erkl‰renden Variablen in linearer
+## Bestimme das beste Subset der erkl√§renden Variablen in linearer
 ## Regression
 library(help = leaps)
 library(leaps)
 
 ## Variance Inflation Factor zum Bestimmen von
-## fast kollinearen erkl‰renden Variablen:
+## fast kollinearen erkl√§renden Variablen:
 library(DAAG)
 library(CAR)
 library(design)
@@ -3067,7 +3067,7 @@ rapply
 ## permuting dimensions in arrays
 aperm()
 
-## data.frame analog zu apply(matrix) ben¸tzen
+## data.frame analog zu apply(matrix) ben√ºtzen
 DF <- data.frame(A = c(2, 3, 5), B = c(8, 7, 1))
 DF[] <- lapply(DF, function(x) ifelse(x < 3, NA, x))
 DF
@@ -3198,7 +3198,7 @@ matSplit <- split(mat, col(mat))
 mat[do.call(order, matSplit), ]
 
 
-## Plot ohne grauen Hintergrund: geht nur mit PDF defaultm‰ssig!!
+## Plot ohne grauen Hintergrund: geht nur mit PDF defaultm√§ssig!!
 ## vgl. auch Trellisplot weiter oben
 trellis.device(device = "pdf",
                file = "test.pdf")
@@ -3213,10 +3213,10 @@ daten1 <- groupedData(PS ~ MO|org/stao, data = daten)
 
 daten1 <- groupedData(PS ~ MO|org/stao, data = datenX)
 
-## Randomeffekte f¸r Intercept und Steigung von stao %in% org
+## Randomeffekte f√ºr Intercept und Steigung von stao %in% org
 r.1 <- lme(PS~MO, random = ~MO|org/stao, data = daten1)
 
-## Randomeffekte f¸r Steigung von stao %in% org
+## Randomeffekte f√ºr Steigung von stao %in% org
 r.2 <- lme(PS~MO, random = ~MO-1|org/stao, data = daten1)
 
 ########
@@ -3230,9 +3230,9 @@ plot(intervals(r.lmList.log1),main = "Test")
 ## Modellwahl bei lme
 ## Voraussetzung: Normalverteilung
 ## REML zur Berechnung des SE und der CI
-## ML f¸r Tests zwischen nested models
+## ML f√ºr Tests zwischen nested models
 ##
-## Merke: Bei Signifikanztests f¸r einzelne fixed effects geben
+## Merke: Bei Signifikanztests f√ºr einzelne fixed effects geben
 ## die conditional t-Tests (summary bei REML) und conditional
 ## F-Tests (anova.lme(...., type = "marginal") realistischere Werte als
 ## ML-Ratio-Tests! (Pinheiro, p. 91)
@@ -3317,7 +3317,7 @@ xtabs(~Aye+Sea,TAB)
 ## cf. Rnews_2001-2.pdf, S. 8
 ## latest example for import: Moleno-01.R for meteo
 
-Sys.timezone()           ## "Westeurop‰ische Sommerzeit"
+Sys.timezone()           ## "Westeurop√§ische Sommerzeit"
 Sys.getlocale("LC_TIME") ## "German_Switzerland.1252"
 Sys.getenv("TZ")         ## ""
 
@@ -3353,7 +3353,7 @@ attr(tim,"tzone") <- "UTC"
 tim
 
 ## ****
-## time stored and printed as Westeurop‰ische Sommerzeit
+## time stored and printed as Westeurop√§ische Sommerzeit
 ## "2004-3-28 02:00" does not exist in DST!!'
 ## "2004-10-31 02:00" is ambiguous
 
@@ -3459,7 +3459,7 @@ as.POSIXlt(tim.char,tz="GMT")
 as.POSIXlt(ct.GMT)-ct.GMT
 ##!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-## In GMT stored and printed as Westeurop‰ische Sommerzeit
+## In GMT stored and printed as Westeurop√§ische Sommerzeit
 Sys.setenv(TZ="")
 print(as.POSIXct("2000-8-31 01:00",tz="GMT"),tz="")
 
@@ -3468,7 +3468,7 @@ Sys.setenv(TZ="GMT")
 print(as.POSIXct("2000-8-31 01:00",tz="GMT"),tz="")
 Sys.setenv(TZ="")
 
-## Mitteleurop‰ische Normalzeit
+## Mitteleurop√§ische Normalzeit
 print(as.POSIXct("2000-8-31 01:00",tz="GMT"),tz="MEZ-1")
 
 print(as.POSIXct("2000-8-31 01:00",tz="MEZ-1"),tz="")
@@ -3481,14 +3481,14 @@ print(strptime("31.8.2000 01:00", format="%d.%m.%Y %H:%M", tz="MEZ-1"),
 as.POSIXct(strptime("31.8.2000 01:00", format="%d.%m.%Y %H:%M",
                     tz="MEZ-1"),tz="")
 
-## Mitteleurop‰ische Sommerzeit
+## Mitteleurop√§ische Sommerzeit
 print(as.POSIXct("2000-8-31 01:00",tz="GMT"),tz="")
 
-## tz="GMT" und tz="UTC" sind ‰quivalent
+## tz="GMT" und tz="UTC" sind √§quivalent
 as.POSIXct("2000-8-31 01:00",tz="UTC")-
 as.POSIXct("2000-8-31 01:00",tz="GMT")
 
-## Westeurop‰ische Sommerzeit geht 2 h vor: Posix-Konvention = -2h
+## Westeurop√§ische Sommerzeit geht 2 h vor: Posix-Konvention = -2h
 ## (ISO Konvention = +2 h im Sommer)
 as.POSIXct("2000-8-31 01:00",tz="")-
 as.POSIXct("2000-8-31 01:00",tz="GMT")
@@ -3539,7 +3539,7 @@ table(d.nt-d.dst)
 ## Sommerzeit wird immer dann berechnet, wenn die Windowseinstellungen
 ## auf "Uhrzeit automatisch auf Sommerzeit umstellen" gesetzt ist.
 ## andernfalls bleibt alles bei Normalzeit.
-## "2003-3-30 02:00" ist (theoretisch) keine g¸ltige Uhrzeit mit
+## "2003-3-30 02:00" ist (theoretisch) keine g√ºltige Uhrzeit mit
 ## MEZ Sommerzeit, gibt aber keinen Fehler in R
 ## Nach dem Umstellen muss R neu gestartet werden!
 
@@ -3657,7 +3657,7 @@ listHolidays()
 
 ## Examples
 years <- 2000:2020
-## Feiertage in der Schweiz (relevant f¸r Verkehr)
+## Feiertage in der Schweiz (relevant f√ºr Verkehr)
 ## General Swiss Holidays
 holiday(years, c("NewYearsDay", "Easter", "CHAscension", "Pentecost",
                  "CHConfederationDay", "ChristmasDay"))
@@ -3683,7 +3683,7 @@ CHKnabenschiessen(years)
 ## Sommerzeit -> Normalzeit: 03:00 wird zu 02:00
 ? DaylightSavingTimeRules
 
-## Umschaltzeiten  Sommer / Winter f¸r ...
+## Umschaltzeiten  Sommer / Winter f√ºr ...
 Zurich()
 NewYork()
 
@@ -3827,7 +3827,7 @@ a
 
 ## Y: 4-stelliges Jahr, y: 2-stelliges Jahr
 ## ->> .leap.seconds gibt alle 22 Schaltsekunden wieder
-## ->> strptime f¸r Format-Abk¸rzungen
+## ->> strptime f√ºr Format-Abk√ºrzungen
 a <- julian(as.POSIXct(strptime("10.9.2000",format="%d.%m.%Y")),
             origin=as.POSIXct(strptime("1.1.00",format="%d.%m.%y")))
 
@@ -3918,7 +3918,7 @@ df
 
 ######################
 ## alternative Zeit-Ojekte und -Funktionen
-## keine Sommerzeit?? Auf jeden Fall ziemlich umst‰ndlich
+## keine Sommerzeit?? Auf jeden Fall ziemlich umst√§ndlich
 library(help=chron)
 library(chron)
 dates("1/1/70")  ## month / day / year
@@ -3984,9 +3984,9 @@ gsub("^([0-9]+)", "x\\1", c("515  a b c   ", "a?-/."))
 ## \a = BEL, \e = ESC, \f = FF, \n = LF, \r = CR, \t = TAB
 
 ## translate Umlaute
-gsub("‰","ae",
-     gsub("ˆ","oe",
-          gsub("¸","ue","‰ˆ¸")))
+gsub("√§","ae",
+     gsub("√∂","oe",
+          gsub("√º","ue","√§√∂√º")))
 
 ## strip numerals
 gsub("^[0-9 ]*", "", c("1    test","13test 5"))
@@ -4038,23 +4038,23 @@ grep("r.*t", c("fratz","ft","fraatz","fraaatz"))
 ## a+ 1 oder mehr a hintereinander
 grep("a+", c("fratz","frt","fraatz","fraaatz"))
 
-## alle Ausdr¸cke, welche nicht mit einem Buchstaben beginnen
+## alle Ausdr√ºcke, welche nicht mit einem Buchstaben beginnen
 test <- c("Fritz","FRT","fraatz","fuzzy","3..", "z4..", "Z4..")
 grep("^[^A-z]", test)
 
-## alle Ausdr¸cke, welche nicht mit einem *kleinen* Buchstaben beginnen
+## alle Ausdr√ºcke, welche nicht mit einem *kleinen* Buchstaben beginnen
 grep("^[^a-z]", test)
 
-## [A-Z] alle Ausdr¸cke, in welchen mindestens ein Buchstabe vorkommt
+## [A-Z] alle Ausdr√ºcke, in welchen mindestens ein Buchstabe vorkommt
 grep("[A-z]", c("3..","a","b","Fritz","FRT","fraatz","fuzzy"))
 
-## [A-Z] alle Ausdr¸cke, in welchen mindestens ein GROSSER Buchstabe vorkommt
+## [A-Z] alle Ausdr√ºcke, in welchen mindestens ein GROSSER Buchstabe vorkommt
 grep("[A-Z]", test)
 
 ## big and small F are different
 grep("F", c("Fritz","FRT","fraatz","fuzzy","3.."))
 
-## [a-d] alle Ausdr¸cke, welche mind. 1 Buchstaben zw. a und d enthalten
+## [a-d] alle Ausdr√ºcke, welche mind. 1 Buchstaben zw. a und d enthalten
 grep("[a-z]", c("Fritz","DRT","frAAtz","fuzzy","3..","a"))
 grep("Fr|dr",c("Fritz","DRT","frAAtz","fuzzy","3.."))   ## | oder
 
@@ -4159,7 +4159,7 @@ abbreviate(c("test","a test"),minlength=2)
 abbreviate(c("test","testen"),minlength=2)
 abbreviate(c("1test","2testen"),minlength=2)
 
-abbreviate(c("L‰rchen","Lurche"),minlength=2)
+abbreviate(c("L√§rchen","Lurche"),minlength=2)
 abbreviate(c("Zug","Schwyz"),minlength=2, )
 
 
@@ -4210,11 +4210,11 @@ print(test, digits = 2)
 
 ## see also
 a <- 999
-sprintf("Die Zahl %d wird in den Text eingef¸gt",a)
+sprintf("Die Zahl %d wird in den Text eingef√ºgt",a)
 sprintf("This is %d in hexadecimal: %X",a,a)
 
 
-## Formatierter Output f¸r einzelne Zahlen
+## Formatierter Output f√ºr einzelne Zahlen
 lapply(c("a", "ABC", "and an even longer one"),
        function(ch) sprintf("10-string `%10s'", ch))
 
@@ -4446,14 +4446,14 @@ library(randomForest)
 ##
 ## F-Test basiert auf asympotischer Chi^2-Verteilung der Residual Deviance
 ## chi^2.df1 / chi^2.df2
-## Bei glm ist die Asymptotik f¸r die F-Test (Devianztest) viel besser als
+## Bei glm ist die Asymptotik f√ºr die F-Test (Devianztest) viel besser als
 ## der Waldtest.
 ##
 ## Bei normalverteilten Daten ist der Wald-Test identisch mit dem F-Test.
-## Wenn Ausreisser vorhanden sind, kˆnnen die beiden Tests unterschiedliche
+## Wenn Ausreisser vorhanden sind, k√∂nnen die beiden Tests unterschiedliche
 ## Ergebnisse liefern:
-## Der F-Test macht eine Aussage ¸ber G¸te des Fits.
-## Der Wald-Test sagt, ob die Parameter-S‰tze voneinander verschieden sind.
+## Der F-Test macht eine Aussage √ºber G√ºte des Fits.
+## Der Wald-Test sagt, ob die Parameter-S√§tze voneinander verschieden sind.
 
 ## to check a model, use drop1(x,test="F") instead of
 ## anova() oder Anova()!
@@ -4469,11 +4469,11 @@ attributes(res)
 
 res <- lm(Sepal.Length ~ Petal.Length + Species, iris)
 anova(res)
-## Test f¸r Species mit F-Test:
+## Test f√ºr Species mit F-Test:
 ## {(SS.small-SS.big)/(p-q)}/{SS.big/(n-p)}
 1 - pf((7.843/2)/(16.682/146), 2, 140)
 
-## Test f¸r Petal.Length
+## Test f√ºr Petal.Length
 1 - pf((77.643/1)/(16.682/146),2,140)
 
 library(MASS)
@@ -4766,7 +4766,7 @@ library(help=systemfit)
 ## environment
 library(help=pheno)
 library(pheno)
-daylength() ## Tagesl‰nge als Funktion der Breite
+daylength() ## Tagesl√§nge als Funktion der Breite
 maxdaylength()
 
 library(help=clim.pact)
@@ -4832,7 +4832,7 @@ library(help=rcompgen)
 
 ## ----------------------------------------
 ## other interesting packages
-library(help=StatDataML)  ## XML-Austausch ¸ber
+library(help=StatDataML)  ## XML-Austausch √ºber
 
 library(help=latticeExtra)
 
