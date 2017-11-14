@@ -1,6 +1,7 @@
-## tips.R
+## -*- coding: utf-8 -*-
+## examples.R
 ## Author: René Locher
-## Version: 2017-11-03
+## Version: 2017-11-14
 
 pathIn <- "dat/"
 
