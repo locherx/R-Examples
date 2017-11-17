@@ -90,7 +90,7 @@ testfun()
 
 
 
-## Measuring run time ----------------------------------------
+## Measuring Run Time ----------------------------------------
 
 fun <- function(n = 10000, fun = function(x) x) {
   # Purpose: Test if system.time works ok;   n: loop size
