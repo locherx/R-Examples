@@ -90,13 +90,16 @@ testfun()
 
 
 
-##----------------------------------------
+## Measuring run time ----------------------------------------
 
-system.time(sum(as.double(1:1E6)))
+fun <- function(n = 10000, fun = function(x) x) {
+  # Purpose: Test if system.time works ok;   n: loop size
+  fun(for(i in 1:n) x <- mean(rt(1000, df = 4)))
+}
 
-## Runtime of Code in [sec] on Windwos
-k <- 0
-proc.time(for (i in 1:1E5) k <- k+1)/100
+system.time(fun(5000))
+
+microbenchmark::microbenchmark(fun(5000), times = 10)
 
 
 ##----------------------------------------
