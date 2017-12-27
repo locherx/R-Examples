@@ -99,7 +99,12 @@ fun <- function(n = 10000, fun = function(x) x) {
 
 system.time(fun(5000))
 
+Sys.time()
+fun(5000)
+Sys.time()
+
 microbenchmark::microbenchmark(fun(5000), times = 10)
+
 
 
 ##----------------------------------------
