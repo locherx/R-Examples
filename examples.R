@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2017-11-14
+## Version: 2017-12-28
 
 pathIn <- "dat/"
 
@@ -1437,9 +1437,6 @@ map("world", region = "Switzerland",  exact = TRUE)
 identify(map(fill = TRUE, col = "white"), n = 5, index = FALSE)
 
 library(ggmap)
-
-
-
 
 x <- y <- seq(-4*pi, 4*pi, len = 27)
 r <- sqrt(outer(x^2, y^2, " + "))
