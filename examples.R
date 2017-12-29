@@ -28,6 +28,9 @@ options()
 warnings() ## print last warnings
 warning()  ## clear last warnings
 
+## Show paths to libraries
+.libPaths()
+
 as.double() ## equivalent to as.real(), as.numeric()
 
 ## HTML-Hilfe in Browser starten
