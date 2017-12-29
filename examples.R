@@ -16,6 +16,7 @@ options(chmhelp = TRUE) ## does not work with emacs
 onError <- function() {
     graphics.off()
 }
+
 options(error = utils::recover)
 ## enter recover() on error. See further below
 
@@ -3372,6 +3373,7 @@ tim.char <- c("2004-3-28 00:00",  ## 1 Normaltime
               "2004-10-31 02:00", ## 6 DST
               "2004-10-31 02:00", ## 7 Normaltime
               "2004-10-31 03:00") ## 8 Normaltime
+
 ct.CET  <-
   as.POSIXct(tim.char, format = "%Y-%m-%d %H:%M", tz = "")
 data.frame(tim.char, ct.CET)
