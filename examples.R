@@ -3320,7 +3320,7 @@ xtabs(~Aye + Sea, TAB)
 ## cf. Rnews_2001-2.pdf, S. 8
 ## latest example for import: Moleno-01.R for meteo
 
-Sys.timezone()           ## "Westeuropäische Sommerzeit"
+Sys.timezone()           ## "Europe/Berlin"
 Sys.getlocale("LC_TIME") ## "German_Switzerland.1252"
 Sys.getenv("TZ")         ## ""
 
@@ -3329,15 +3329,15 @@ Sys.getlocale("LC_ALL")
 
 ## Sys.setenv(TZ = "GMT")
 Sys.setenv(TZ = "")
-
+## [1] "LC_COLLATE=German_Switzerland.1252;LC_CTYPE=German_Switzerland.1252;LC_MONETARY=German_Switzerland.1252;LC_NUMERIC=C;LC_TIME=German_Switzerland.1252"
 
 ## Length of Months in days
 c(31, 28, rep(c(31, 30), 2), 31, rep(c(31, 30), 2), 31)
 
 ## POSIXct represents the (signed) number of seconds
-## since 1.1.1970 as a numeric vector
-## takes date-time-string as GMT if timezone is not valid,
-## takes date-time-string as GMT shifted by n hour when tz = xxx-n,
+## since 1.1.1970 UTC as a numeric vector
+## takes date-time-string as UTC if timezone is not valid,
+## takes date-time-string as UTC shifted by n hour when tz = xxx-n,
 ## takes date-time-string as local tz when tz = ""
 ## tz attribute is just printing information
 ## prints by default in timezone of computer system
@@ -3347,13 +3347,17 @@ unclass(as.POSIXct("1970-1-1", tz = "UTC"))
 unclass(as.POSIXct("1970-1-1", tz = ""))
 
 ## remove timezones
-tim <- c(as.POSIXct("2000-1-31"), as.POSIXct("1970-1-1", tz = "UTC"))
+tim <- c(as.POSIXct("1970-1-1"), as.POSIXct("1970-1-1", tz = "UTC"))
 tim
 print(tim, tz = "UTC")
+format(tim, tz = "UTC")
 
 ## recreate timezone
 attr(tim, "tzone") <- "UTC"
 tim
+format(tim)
+format(tim, tz = "UTC")
+
 
 ## ****
 ## time stored and printed as Westeuropäische Sommerzeit
@@ -3379,7 +3383,7 @@ str(ct.CET)
 
 ## ****
 ## time stored and printed in GMT, NO DST!!
-## MEZ-1 gives rubbish during DST !!??
+## CET-1 gives rubbish during DST !!??
 ## see work around in next paragraph
 ct.GMT  <-
   as.POSIXct(tim.char, format = "%Y-%m-%d %H:%M", tz = "GMT")
@@ -3387,9 +3391,8 @@ ct.UTC  <-
   as.POSIXct(tim.char, format = "%Y-%m-%d %H:%M", tz = "UTC")
 ct.UTC1  <-
   as.POSIXct(tim.char, format = "%Y-%m-%d %H:%M", tz = "UTC-1")
-
 data.frame(tim.char, ct.GMT, ct.UTC, ct.UTC1)
-## warnings, because UTC + 1 is no official time. Beware sign!!
+## warnings, because UTC - 1 is no official time. Beware sign!!
 
 ct.UTC-ct.GMT
 ## Time differences in secs
@@ -3407,9 +3410,7 @@ as.numeric(ct.CET-ct.UTC, units = "secs")
 as.numeric(ct.CET-ct.UTC, units = "hours")
 as.numeric(ct.CET-ct.UTC, units = "days")
 as.numeric(ct.CET-ct.UTC, units = "weeks")
-as.numeric(ct.CET-ct.UTC, units = "auto") ## smallest units with number>1
-
-
+as.numeric(ct.CET-ct.UTC, units = "auto") ## smallest units with value > 1
 
 ct.CET-ct.UTC1
 ## Time differences in secs
@@ -3431,13 +3432,28 @@ format(ct.GMT-3600, tz = "")
 
 format(ct.GMT, format = "y-m-d h:M", tz = "")
 format(ct.GMT, format = "%y-%m-%d %H:%M", tz = "")
+format(ct.GMT, format = "%y-%m-%d %H:%M", tz = "CET")
+
+##
+Sys.getenv("TZ")
+Sys.timezone() ## On Windows 7, Switzerland: [1] "Europe/Berlin"
+Sys.timezone(location = FALSE) ## [1] "CET"
+str(OlsonNames())
 
 Sys.setenv(TZ = "GMT")
-as.POSIXct(tim.char, tz = "MEZ-1")
+as.POSIXct(tim.char, tz = "CET-1")
 Sys.setenv(TZ = "")
 
-format(as.POSIXct("2000-1-31", tz = "UTC"), tz = "UTC + 1")
-format(as.POSIXct("2000-1-31", tz = "UTC"), tz = "UTC + 1")
+as.POSIXct(tim.char, tz = "")    ## Hours lost!!???
+as.POSIXct(tim.char, tz = "Europe/Berlin") ## Hours lost!!???
+as.POSIXct(tim.char, tz = "CET")           ## Hours lost!!???
+as.POSIXct(tim.char, format = "%Y-%m-%d %H:%M", tz = "CET") ## correct
+as.POSIXct(tim.char, tz = "UTC") ## correct
+as.POSIXct("2017-01-01", format = "%Y-%m-%d %H:%M", tz = "CET") ## NA
+as.POSIXct("2017-01-01 00:00", format = "%Y-%m-%d", tz = "CET") ## "2017-01-01 CET"
+
+format(as.POSIXct("2000-1-31", tz = "UTC"), tz = "UTC+1")
+format(as.POSIXct("2000-1-31", tz = "UTC"), tz = "UTC-1")
 
 
 ## ****
