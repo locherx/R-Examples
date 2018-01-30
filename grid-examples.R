@@ -39,7 +39,7 @@ xyp <- xyplot(y ~ x | z)
 ## plots this object
 print(xyp, newpage = FALSE)
 
-grid.rect(gp=gpar(col="blue"))
+grid.rect(gp = gpar(col = "blue"))
 
 ## back to upper1.1.2
 popViewport()
@@ -51,9 +51,9 @@ pushViewport(viewport(layout.pos.col = 2,
 ## grid.text("upper1.1.2.2")
 ## grid.rect(gp=gpar(col="red"))
 
-grid.points(x=rep(1:10, 10),
-            y=rep(1:10, each = 10), pch = 32:131, gp=gpar(col = 1:100))
-grid.rect(gp=gpar(col="red"))
+grid.points(x = rep(1:10, 10),
+            y = rep(1:10, each = 10), pch = 32:131, gp = gpar(col = 1:100))
+grid.rect(gp = gpar(col="red"))
 
 ##showViewport(col=rgb(0, 0, 1, 0.2))
 
@@ -79,7 +79,7 @@ grid.rect(gp = gpar(col = "green"))
 par(omi = gridOMI())
 
 ## Then just plot as you are used to do
-par(mfrow = c(1, 1), mfg = c(1, 1), mar=c(4,4,0.5,0.5), las = 1)
+par(mfrow = c(1, 1), mfg = c(1, 1), mar = c(4,4,0.5,0.5), las = 1)
 x <- 10*(1:nrow(volcano))
 y <- 10*(1:ncol(volcano))
 image(x, y, volcano, col = terrain.colors(100), axes = FALSE)
