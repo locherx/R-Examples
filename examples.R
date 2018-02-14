@@ -890,7 +890,6 @@ validate.lrm()    ## Resampling Validation of a Logistic Model
 
 #####################################
 ## Input - Output
-## Transfer von Daten aus S-Plus nach R
 
 ## Reading in data with different length of rows
 ## Attention: at least header must be complete!!
@@ -935,7 +934,6 @@ x <- readline()
 x
 
 readLines(stdin(), 2)
-
 
 testit <- function()
 {
@@ -2602,11 +2600,17 @@ ll
 c(ll, "fourth element")
 list(ll, "fourth element")
 
+mat <- matrix(1:6, ncol = 2)
+c(ll, mat)
+list(ll, mat)
+c(ll, list(mat))
+
 ll1 <- as.list(rep(NA, 2))
 ll1[[1]] <- 100
 ll1[[2]] <- 1:10
 ll1[1:2]
 sapply(ll1, sum)
+
 
 ########################
 ## Bestimme das beste Subset der erklärenden Variablen in linearer
