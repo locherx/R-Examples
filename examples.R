@@ -2649,6 +2649,12 @@ as.matrix(mat[, 1])
 mat[mat>2] <- 0
 mat
 
+## Extracting a matrix
+mat[1:2, 1:2]
+
+## Extracting single elements
+mapply(function(i, j, M) M[i, j], 1:2, 1:2, MoreArgs = list(mat))
+
 mat %*% t(mat)
 mat[, 1] %*% mat
 ## vector : =  dim(1, n), contrary to math def!
