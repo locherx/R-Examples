@@ -791,6 +791,22 @@ for (i in 1:10){
   print(result)
 }
 
+g <- function(x){
+    xStr <- deparse(substitute(x))
+    if (xStr == "") {
+        stop("x is missing!\n")
+    } else {
+        if (inherits(try(is(x), silent = TRUE), "try-error")) {
+            stop(xStr, " is not defined\n")
+        }
+    }
+    cat("x: ", x, "\n")
+}
+
+g(1)
+g()
+g(notDefined)
+
 ## executes code defined in on.exit() when exiting a function or R
 on.exit()
 
