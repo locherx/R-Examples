@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2017-12-28
+## Version: 2018-03-21
 
 pathIn <- "dat/"
 
@@ -97,7 +97,7 @@ testfun()
 ## Measuring Run Time ----------------------------------------
 
 fun <- function(n = 10000, fun = function(x) x) {
-  # Purpose: Test if system.time works ok;   n: loop size
+  # Purpose: Test if system.time works;   n: loop size
   fun(for(i in 1:n) x <- mean(rt(1000, df = 4)))
 }
 
@@ -415,7 +415,7 @@ is.element(x, 0:10)
 
 match(c(4:5, 11), 0:10)
 
-## scope of objects, lexical scoping
+## scope of objects, lexical scoping ----------------------------------------
 ## Gültigkeitsbereich
 
 xx <- 10
@@ -427,7 +427,7 @@ tf0(xx)
 xx
 
 tf1 <- function(xx)
-  {xx < <-  xx + 1}
+  {xx <<-  xx + 1}
 
 tf1(xx)
 xx
@@ -436,21 +436,23 @@ tf2 <- function(yy)
   {yy.nam <- deparse(substitute(yy))
    ## deparse must be called before first evaluation of yy!
 
-   yy <- yy + 1
+   yy <- yy + 1 ## 12
    print(paste(yy.nam, yy, sep = ": "))
-   assign(yy.nam, yy + 1, env = .GlobalEnv)
+   assign(yy.nam, yy + 1, env = .GlobalEnv) ## assign 13 to xx
  }
 
 xx
 tf2(xx)
 xx
 
-
 ## Execute a function call
 ## deparsing does not work as expected within a do.call because
 ## xx is already evaluated by do.call!!
-do.call("tf", list(xx))
+do.call("tf2", list(xx))
 xx
+
+## To circumvent the execution
+do.call("tf2", list(quote(xx)))
 
 expression(pi)
 eval(expression(pi))
@@ -458,32 +460,45 @@ eval(expression(pi))
 parse(text = "pi") ## = expression(pi)
 eval(parse(text = "pi"))
 
+## Demonstration of lazy evaluation ----------------------------------------
 f1 <- function(x, y = x)             { x <- x + 1; return(y)}
 f2 <- function(x, y = eval(x))       { x <- x + 1; return(y) }
 f4 <- function(x, y = x) { y <- y - 1; x <- x + 1; return(y) }
-s1 <- function(x, y = substitute(x)) { x <- x + 1; return(y) }
-
-s2 <- function(x, y)
-{
-  if(missing(y)) y <- substitute(x); x <- x + 1; return(y)
-}
-
-s3 <- function(x, y = substitute(x)) { x <- x + 1; y <- y-1; return(y) }
-
-s4 <- function(x, y = substitute(x))
-{
-  y <- y - 1; x <- x + 1; return(y)
-}
 
 
 a <- 10
 f1(a)         # 11
 f1(10)        # 11
-f1(a, 1)       # 1
-typeof(f1(a)) # "double"
+f1(a, 1)      # 1
 f2(a)         # 11
 f4(a)         # 9
 
+## Demonstration of substitution ----------------------------------------
+s1 <-
+    function(x, y = substitute(x)) {
+        x <- x + 1
+        return(y)
+    }
+
+s2 <-
+    function(x, y) {
+        if(missing(y)) y <- substitute(x)
+        x <- x + 1; return(y)
+    }
+
+s3 <-
+    function(x, y = substitute(x)) {
+        x <- x + 1
+        y <- y - 1; return(y)
+    }
+
+s4 <-
+    function(x, y = substitute(x)) {
+        y <- y - 1
+        x <- x + 1; return(y)
+    }
+
+a             # 10
 s1(a)         # 11
 s2(a)         # a
 s3(a)         # 10
