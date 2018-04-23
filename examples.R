@@ -164,7 +164,6 @@ capabilities()
 ## Accuracy of R
 str(.Machine)
 
-
 ## run this for error reports
 sessionInfo()
 
@@ -205,7 +204,6 @@ Sys.getlocale()
 ## Settings for aprpriate Umlaute in R
 ## "LC_COLLATE = German_Switzerland.1252;LC_CTYPE = German_Switzerland.1252;LC_MONETARY = German_Switzerland.1252;LC_NUMERIC = C;LC_TIME = German_Switzerland.1252"
 ## (custom-set-variables '(current-language-environment "UTF-8"))
-
 
 Sys.info()
 Sys.info()["sysname"]
@@ -270,8 +268,8 @@ iconv(x, "latin1", "ISO8859-1")
 ## starting R in single windows:
 ## C:\Programme\R\bin\Rgui.exe --sdi
 
-DOS> rterm < inpFile   #Old Version of Batch-Prozess
-Windows> rscript < inpFile
+## DOS> rterm < inpFile   #Old Version of Batch-Prozess
+## Windows> rscript < inpFile
 
 ## encoding stdin
 rterm --encoding
@@ -415,6 +413,10 @@ is.element(x, 0:10)
 
 match(c(4:5, 11), 0:10)
 
+isTRUE(0)
+isTRUE(1)
+isFALSE(0)
+
 ## scope of objects, lexical scoping ----------------------------------------
 ## Gültigkeitsbereich
 
@@ -459,6 +461,15 @@ eval(expression(pi))
 
 parse(text = "pi") ## = expression(pi)
 eval(parse(text = "pi"))
+
+tf3 <-
+    function(arg) {
+        x <- deparse(substitute(arg))
+        print(x)
+    }
+
+tf3(f)
+tf3(arg = c(a, b, c))
 
 ## Demonstration of lazy evaluation ----------------------------------------
 f1 <- function(x, y = x)             { x <- x + 1; return(y)}
@@ -978,6 +989,8 @@ testit <- function()
 
 ## wait for key pressed or mouse moved
 ?getGraphicsEvent
+
+askYesNo()
 
 
 ## ----------------------------------------
@@ -4382,8 +4395,9 @@ for(i in 1:122) {
 ## search for object of name nam:
 x <- get(nam)
 
-## Symbolically encode a given numeric or logical vector or array
+## Symbolically encoding a given numeric or logical vector or array
 ii <- 0:8; names(ii) <- ii
+ii
 symnum(ii, cut =  2*(0:4), sym = c(".", "-", " + ", "$"))
 
 
