@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-03-21
+## Version: 2018-06-07
 
 pathIn <- "dat/"
 
@@ -810,13 +810,6 @@ traceback()           # prints the call stack of the last uncaught error
 ##----------------------------------------
 ## error handling
 
-## don't leave loop when there is an error
-for (i in 1:10){
-  result <- try(myfun(...))
-  if(inherits(result, "try-error")) next
-  print(result)
-}
-
 g <- function(x){
     xStr <- deparse(substitute(x))
     if (xStr == "") {
@@ -833,14 +826,53 @@ g(1)
 g()
 g(notDefined)
 
-## executes code defined in on.exit() when exiting a function or R
+
+## More flexible tryCatch
+
+errFun <-
+    function(e)
+{
+    cat("errFun:", geterrmessage(), "\n")
+}
+
+warnFun <-
+    function(e)
+{
+    cat("warnFun:", conditionMessage(e), "\n")
+}
+
+finFun <-
+    function()
+{
+    cat("Executed before leaving tryCatch\n")
+}
+
+
+tryCatch(log(a),
+         error = errFun,
+         warning = warnFun,
+         finally = finFun())
+
+tryCatch(log(-1),
+         error = errFun,
+         warning = warnFun,
+         finally = finFun())
+
+tryCatch(log(1),
+         error = errFun,
+         warning = warnFun,
+         finally = finFun())
+
+
+## executes code defined in on.exit() when exiting current function (or R)
 on.exit()
 
 ## prompt error message and exit function
-stop()
+stop("without reason")
 
 ## prompt warning
-warning()
+warning("bla")
+
 
 ##----------------------------------------
 ## Operators
