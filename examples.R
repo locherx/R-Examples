@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-06-07
+## Version: 2018-06-16
 
 pathIn <- "dat/"
 
@@ -196,9 +196,15 @@ Sys.getenv("sysname")
 ## get version of installed java
 system("java -version")
 
+## Getting system time and date
+date()
+str(date())
+
+Sys.time()
+str(Sys.time())
+
 ## typing time
 system(command = "CMD.EXE /C time /t", intern = TRUE) ## Alternative
-
 
 Sys.getlocale()
 ## Settings for aprpriate Umlaute in R
@@ -826,9 +832,25 @@ g(1)
 g()
 g(notDefined)
 
+x <- try(1/a, silent = TRUE)
+x
+inherits(x, "try-error")
 
-## More flexible tryCatch
+## Print last error message
+geterrmessage()
 
+simpleError(x)
+simpleWarning(x)
+
+x <- 1:10
+x[3] <- try(1/a, silent = TRUE)
+x
+inherits(x, "try-error")
+
+simpleError(x)
+
+
+## More flexible with tryCatch()
 errFun <-
     function(e)
 {
