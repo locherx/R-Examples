@@ -2504,12 +2504,10 @@ lattice:::banking
 #############
 ####Contrasts
 
-                                        # Default contrasts:
+## Default contrasts:
 options()$contrasts
-                                        #            factor      ordered
-                                        # "contr.treatment" "contr.poly"
-
-
+##            factor      ordered
+## "contr.treatment" "contr.poly"
                                         #Testdatensatz erzeugen
 kon <- data.frame(x = rep(c("A", "B", "C"), rep(10, 3)),
                   y = rep(c(3, 10, 20), rep(10, 3)) +  rnorm(30))
@@ -3227,8 +3225,6 @@ merge(X, Y)                ## all possible combinations, sorted
 merge(X, Y, sort = FALSE)  ## all possible combinations, but NOT in original order of X!!
 plyr::join(X, Y)           ## all possible combinations in original order of X
 
-
-
 ## result = extended observations!!!
 X <- data.frame(A = I(letters[5:1]))
 
@@ -3271,7 +3267,7 @@ cut()
 ######################
 ## lme models
 
-library(nlme)
+require(nlme)
 data(Orthodont)
 plot(Orthodont)
 formula(Orthodont)
@@ -3307,6 +3303,9 @@ x[order(x$x), ]
 ## Ordering along a matrix
 mat <- matrix(sample(1:5, 20, replace = TRUE), ncol = 2)
 mat[order(mat[, 1], mat[, 2]), ]
+
+## Throws an error
+## mat[order(mat), ]
 
 ## This is extensible to multiple columns
 matSplit <- split(mat, col(mat))
