@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-06-16
+## Version: 2018-07-16
 
 pathIn <- "dat/"
 
@@ -92,8 +92,6 @@ install_github("Oliver4242/testdemo")
 library(testdemo)
 testfun()
 
-
-
 ## Measuring Run Time ----------------------------------------
 
 fun <- function(n = 10000, fun = function(x) x) {
@@ -102,14 +100,14 @@ fun <- function(n = 10000, fun = function(x) x) {
 }
 
 system.time(fun(5000))
+## user  system elapsed
+## 1.06    0.00    1.06
 
-Sys.time()
+started <- Sys.time()
 fun(5000)
-Sys.time()
+difftime(Sys.time(), started, units = "sec")
 
 microbenchmark::microbenchmark(fun(5000), times = 10)
-
-
 
 ##----------------------------------------
 library(IDPmisc)
