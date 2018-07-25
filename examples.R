@@ -3461,6 +3461,8 @@ tim
 print(tim, tz = "UTC")
 format(tim, tz = "UTC")
 
+data.frame(tim, tim)
+
 ## recreate timezone
 attr(tim, "tzone") <- "UTC"
 tim
@@ -4204,31 +4206,31 @@ rbind(x, n)
 
 ## find patterns with a "1" at the end of the line preceded by one or
 ## more "0"
-regexpr("10 + 1$", x)
+regexpr("10+1$", x)
 
 ## find first sequence
 ## starting and ending with 1 and at least one zero in between
-regexpr("10 + 1", x)
+regexpr("10+1", x)
 
 ## find all sequences
 ## starting and ending with 1 and at least one zero in between
 ## Note that 23 is no sequence as 23 is the last character of sequence 19!
-gregexpr("10 + 1", x)
+gregexpr("10+1", x)
 
 ## Split string into single characters
 cbind(unlist(strsplit(x, split = "")))
 
 ## find first match in string
-regexpr("1 + ", x)
-regexpr("2 + ", x)
+regexpr("1+", x)
+regexpr("2+", x)
 
 ## find all series of 1s in string
-gregexpr("1 + ", x)
+gregexpr("1+", x)
 
 ## find all sequences of exactly 2 zeros in sequence
 gregexpr("0{2}", x)
 
-attr(gregexpr("1 + ", x)[[1]], "match.length")
+attr(gregexpr("1+", x)[[1]], "match.length")
 
 ## find all sequences starting at position 1 or with a 1
 ## followed by 2 zeros at least
@@ -4240,12 +4242,12 @@ gregexpr("(^0|[^0])0{2}", x)
 rbind(x, gsub("0{2}", "x", x))
 
 ## find all series of 1 in string which are longer than 1
-gregexpr("1{2, }", x)
+gregexpr("1{2,}", x)
 
 ## find all series of 1 in string
 ##   which are longer than 1 and shorter than 4
 ## attention: index gives the place before the first 1
-gregexpr("[^1]1{2, 3}[^1]", x)
+gregexpr("[^1]1{2,3}[^1]", x)
 
 x <- "00    0100 111000 110111100101"
 n <- paste((1:nchar(x))%%10, collapse = "")
@@ -4257,7 +4259,7 @@ strsplit(x, "[^0-9A-Za-z.-] + ") ## the complicated way
 strsplit(x, "[[:space:]] + ")    ## the most comprehensive way
 
 
-x <- gregexpr("1 + ",
+x <- gregexpr("1+",
               paste(sample(0:1, 100, replace = TRUE), collapse = ""))
 attr(x[[1]], "match.length")
 
