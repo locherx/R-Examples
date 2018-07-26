@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-07-16
+## Version: 2018-07-25
 
 pathIn <- "dat/"
 
@@ -3136,11 +3136,18 @@ xyz <- data.frame(x = c(rep("A", 50), rep("B", 50)),
                   y = rep(c(rep("a", 25), rep("b", 25)), 2),
                   z = rnorm(100),
                   Z = 100*rnorm(100))
-aggregate(xyz$z, by = list(xyz$x), mean)
-aggregate(z ~ x, data  = xyz, mean)
+head(xyz)
+(r <- aggregate(xyz$z, by = list(xyz$x), FUN = mean))
+str(r)
+aggregate(z ~ x, data  = xyz, FUN = mean)
 
-by(xyz$z, IND = list(xyz$x), mean)
-tapply(xyz$z, INDEX = list(xyz$x), mean)
+by(xyz$z, IND = list(xyz$x), FUN = mean)
+tapply(xyz$z, INDEX = list(xyz$x), FUN = mean)
+
+(r <- by(xyz$z, IND = list(xyz$x, xyz$y), FUN = mean))
+str(r)
+(r <- tapply(xyz$z, INDEX = list(xyz$x, xyz$y), FUN = mean))
+str(r)
 
 aggregate(xyz$z, by = list(xyz$x), quantile)
 tapply(xyz$z, INDEX = list(xyz$x), quantile)
@@ -4216,6 +4223,10 @@ regexpr("10+1", x)
 ## starting and ending with 1 and at least one zero in between
 ## Note that 23 is no sequence as 23 is the last character of sequence 19!
 gregexpr("10+1", x)
+
+## find all series of 1
+x <- gregexpr("1+", x)
+cumsum(x[[1]])
 
 ## Split string into single characters
 cbind(unlist(strsplit(x, split = "")))
