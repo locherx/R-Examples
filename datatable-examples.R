@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Authors: Vasily Tolkachev, René Locher
-## Version: 2018-10-03
+## Version: 2018-08-07
 
 library(MASS)
 library(data.table)
@@ -76,11 +76,16 @@ dat[, .(nox, age, black)]
 ## Compute several functions
 dat[, .(mean(nox), sd(age), mad(black))]
 
-## Compute these functions for groups (levels) of rad.f
+## Compute these functions for groups (levels) of rad.f (aggregate)
 dat[, .(mean(nox), sd(age), mad(black)), by = rad.f]
+dat[, .(mean(nox), sd(age), mad(black)), by = rad]
 
 ## Compute functions for every level of rad.f and return a data.table with column names
-data[, .( Var1 = mean(nox), Var2 = sd(age), Var3 = mad(black) ), by = rad.f]
+dat[, .(Var1 = mean(nox), Var2 = sd(age), Var3 = mad(black) ), by = rad.f]
+
+## Combined aggregating and merging
+dat[, meanNox := mean(nox), by = rad.f]
+dat
 
 ## Add many new variables with `:=`().
 ## If a variable attains only a single value, copy it for each observation
