@@ -3,6 +3,8 @@
 ## Authors: Vasily Tolkachev, refined and extended by René Locher
 ## Version: 2018-08-08
 
+## See also http://datatable.r-forge.r-project.org/datatable-faq.pdf
+
 rm(list = objects(pattern = ".*"))
 
 library(MASS)
@@ -143,13 +145,22 @@ dat
 dat[, mean(nox), by = rad.f]
 
 ## Merging
-x <- data.table(k = 5:1, a = 20:24, zoo = 5:1 )
+x <- data.table(k = 5:0, a = 20:25, zoo = 5:0 )
 y <- data.table(k = 1:6, b = 30:35, boo = 10:15)
 setkey(x, k)
 setkey(y, k)
+## on = is not necessary when keys are set but
+## makes code more transparent
 
-merge(x, y)
-merge(x, y, all = TRUE)
+merge(x, y, on = k, all.x = TRUE)
+merge(x, y, on = k, all.y = TRUE)
+
+## This is faster and more efficient!! See FAQ
+y[x, on = "k"]
+x[y, on = "k"]
+
+## This join is rarely used
+merge(x, y, on = k, all = TRUE)
 
 ## Dynamic variable creation --------------------
 ## Now let’s create a variable of weighted means (mean_w),
@@ -188,15 +199,6 @@ dat[ , crim.f := "low"] [
     crim >= 10, crim.f := "severe"][,
       , crim.f := as.factor(crim.f)]
 
-
-## Special functions --------------------
-## .N function count the number observations in a group:
-dat[, .N, by = .(rad.f, crim.f) ]
-
-## Another useful function is .SD which contains values
-## of all variables except the one used for grouping
-dat[, .SD, by =  crim.f ]
-
 ## Renaming column names --------------------
 names(dat)
 setnames(dat, c("rm", "zn"), c("rooms_average", "proportion_zoned") )
@@ -211,7 +213,7 @@ names(dat)
 setkey(dat, rad.f, crim.f)
 
 ## use binary search (fast, O(log(n) )
-dat[.("f7", "low"), ]
+dat[.("f7", "low"), .(rad.f, crim.f, tax)]
 
 dat[, .(crim, tax)]
 setorder(dat, crim, tax)
@@ -224,3 +226,27 @@ dat[rad.f =="f7" & crim.f == "low"]
 
 ## Avoid using data.frame’s vector scan inside data.table:
 dat[dat$rad.f == "f7" & dat$crim.f == "low", ]
+
+
+## Special functions --------------------
+## .N function count the number observations in a group:
+dat[, .N, by = .(rad.f, crim.f)]
+dat[, .N]
+
+## Another useful function is .SD which contains values
+## of all variables except the one used for grouping
+dat[, .SD[1], by =  crim.f ]
+dat[, lapply(.SD, mean), by =  crim.f, .SDcols = tax:age]
+dat[, lapply(.SD, mean), by =  crim.f, .SDcols = c("tax", "age")]
+
+## Group counter .GRP
+dat[, .(.I, .GRP, .N), by =  crim.f]
+
+## Runtime Length ID
+dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
+                   L = sample(LETTERS[1:3], 30, replace = TRUE))
+dtab[, .SD]
+rleid(dtab$bit)
+dtab[, bit, by = rleid(bit)]
+
+
