@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Authors: Vasily Tolkachev, refined and extended by René Locher
-## Version: 2018-08-07
+## Version: 2018-08-08
 
 rm(list = objects(pattern = ".*"))
 
@@ -16,6 +16,8 @@ dat
 
 class(dat)
 
+## data.table is also a data.frame
+sapply(dat, is)
 
 ## Addressing data --------------------
 ## subset rows from 11 to 20
@@ -195,20 +197,30 @@ dat[, .N, by = .(rad.f, crim.f) ]
 ## of all variables except the one used for grouping
 dat[, .SD, by =  crim.f ]
 
-## Use setnames() and setcolorder() functions to change column names or reorder them:
-setnames(dat, c("rm", "zn"), c("rooms_average", "proportion_zoned") )[]
+## Renaming column names --------------------
+names(dat)
+setnames(dat, c("rm", "zn"), c("rooms_average", "proportion_zoned") )
+names(dat)
 
-## set the key
+## Sorting columns
+setcolorder(dat, rev(names(dat)))
+names(dat)
+
+## Sorting rows --------------------
+## set the key. Order is always ascending
 setkey(dat, rad.f, crim.f)
 
 ## use binary search (fast, O(log(n) )
 dat[.("f7", "low"), ]
+
+dat[, .(crim, tax)]
+setorder(dat, crim, tax)
+dat[, .(crim, tax)]
+setorder(dat, -crim, tax) ## Descending order for crim!
+dat[, .(crim, tax)]
 
 ## DO NOT use vector scan (slow, O(n) )
 dat[rad.f =="f7" & crim.f == "low"]
 
 ## Avoid using data.frame’s vector scan inside data.table:
 dat[dat$rad.f == "f7" & dat$crim.f == "low", ]
-
-## data.table is also a data.frame
-sapply(dat, is)
