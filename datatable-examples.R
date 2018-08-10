@@ -151,21 +151,21 @@ dat[, mean(nox), by = rad.f]
 
 ## Merging
 x <- data.table(k = 5:0, a = 20:25, zoo = 5:0 )
-y <- data.table(k = 1:6, b = 30:35, boo = 10:15)
+y <- data.table(l = 1:6, b = 30:35, boo = 10:15)
 setkey(x, k)
-setkey(y, k)
+setkey(y, l)
 ## on = is not necessary when keys are set but
 ## makes code more transparent
 
-merge(x, y, on = k, all.x = TRUE)
-merge(x, y, on = k, all.y = TRUE)
+merge(x, y, by.x = "k", by.y = "l", all.x = TRUE)
+merge(x, y, by.x = "k", by.y = "l", all.y = TRUE)
 
 ## This is faster and more efficient!! See FAQ
-y[x, on = "k"]
-x[y, on = "k"]
+y[x]
+x[y]
 
-## This join is rarely used
-merge(x, y, on = k, all = TRUE)
+## This join is rarely used and only available in merge()
+merge(x, y, by.x = "k", by.y = "l", all = TRUE)
 
 ## Dynamic variable creation --------------------
 ## Now let’s create a variable of weighted means (mean_w),
