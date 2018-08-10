@@ -87,6 +87,10 @@ DT[, c(x, y)]
 DT[, list(x, y)]
 DT[, .(x, y)]
 
+str(DT)
+
+## Template of data.table DT
+str(DT[0])
 
 ## Computing --------------------
 ## Find the range of crim (criminality) variable
