@@ -99,6 +99,7 @@ dat[, range(crim)]
 ## Add a new variable with :=
 dat[, rad.f := as.factor(paste0("f", rad))]
 dat[, levels(rad.f)]
+str(dat)
 
 ## i.e. we defined a new factor variable(rad.f) in the data table
 ## from the integer variable radius (rad), which describes accessibility to radial highways
@@ -253,4 +254,53 @@ dtab[, .SD]
 rleid(dtab$bit)
 dtab[, bit, by = rleid(bit)]
 
+## Scoping of data.table within functions --------------------
+testScope0 <-
+    function(dtbl){
+        dtbl[, bit2 := bit*0.5]
+        return(dtbl)
+    }
+
+dtab1 <- testScope0(dtab)
+dtab1
+
+dtab
+
+identical(dtab, dtab1)
+## dtab AND dtab1 are identical!!!
+rm(dtab1)
+
+testScope1 <-
+    function(dtbl){
+        dtbl.local <- dtbl
+        dtbl.local[, bit2 := bit*2]
+        return(dtbl.local)
+    }
+
+dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
+                   L = sample(LETTERS[1:3], 30, replace = TRUE))
+dtab1 <- testScope1(dtab)
+dtbl.local ## error, QED
+dtab1
+
+dtab
+
+identical(dtab, dtab1)
+## dtab AND dtab1 are identical!!!
+rm(dtab1)
+
+## data.tables are input by reference and not by copy!!!
+## Solution: Copy data.table within function first!
+testScope2 <-
+    function(dtbl){
+        dtbl.local <- copy(dtbl)
+        dtbl.local[, bit2 := bit*3]
+        return(dtbl.local)
+    }
+dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
+                   L = sample(LETTERS[1:3], 30, replace = TRUE))
+dtab1 <- testScope2(dtab)
+dtbl.local ## error, QED
+identical(dtab, dtab1)
+## [1] FALSE
 
