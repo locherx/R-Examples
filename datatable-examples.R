@@ -254,7 +254,7 @@ dtab[, .SD]
 rleid(dtab$bit)
 dtab[, bit, by = rleid(bit)]
 
-## Scoping of data.table within functions --------------------
+## data.table within functions --------------------
 testScope0 <-
     function(dtbl){
         dtbl[, bit2 := bit*0.5]
@@ -268,6 +268,7 @@ dtab
 
 identical(dtab, dtab1)
 ## dtab AND dtab1 are identical!!!
+## -> data.table are passed by reference (exception!!)
 rm(dtab1)
 
 testScope1 <-
@@ -280,14 +281,12 @@ testScope1 <-
 dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
                    L = sample(LETTERS[1:3], 30, replace = TRUE))
 dtab1 <- testScope1(dtab)
+
 dtbl.local ## error, QED
 dtab1
-
 dtab
-
 identical(dtab, dtab1)
 ## dtab AND dtab1 are identical!!!
-rm(dtab1)
 
 ## data.tables are input by reference and not by copy!!!
 ## Solution: Copy data.table within function first!
@@ -299,8 +298,57 @@ testScope2 <-
     }
 dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
                    L = sample(LETTERS[1:3], 30, replace = TRUE))
-dtab1 <- testScope2(dtab)
-dtbl.local ## error, QED
-identical(dtab, dtab1)
-## [1] FALSE
 
+dtab2 <- testScope2(dtab)
+dtbl.local ## error, QED
+identical(dtab, dtab2)
+## [1] FALSE, QED
+
+## The following lines do not work as intended
+testDynProg1 <-
+    function(dtab, nam){
+       return(dtab[, nam])
+    }
+testDynProg1(dtab, "bit")             ## error
+testDynProg1(dtab, bit)               ## error
+testDynProg1(dtab, quote(bit))        ## error
+testDynProg1(dtab, quote(quote(bit))) ## error
+
+## This is solution 1
+testDynProg2 <-
+    function(dtab, expr){
+        e <- substitute(expr)
+       return(dtab[, eval(e)])
+    }
+
+testDynProg2(dtab, "bit")  ## error
+testDynProg2(dtab, .(bit)) ## ok!
+
+## This is solution 2
+testDynProg3 <-
+    function(dtab, nam){
+       return(dtab[, nam, with = FALSE])
+    }
+
+testDynProg3(dtab, "bit")  ## ok!
+
+
+## Differences between data.table and data.frame ----------------------------------------
+dframe <- data.frame(x = c(2, NA, 3), y = 1:3, z = letters[1:3])
+dtable <- data.table(x = c(2, NA, 3), y = 1:3, z = letters[1:3])
+
+str(dframe)            ## z is a factor!
+str(dtable)            ## z is a character string!
+
+dframe[dframe$x > 2, ] ## NA results in a row of NAs
+dtable[x > 2, ]        ## NA is equivalent to FALSE
+
+dframe[, "x"]
+dtable[, x]
+
+dframe[, c("x", "y")]
+dtable[, c("x", "y")]
+dtable[, c("x", "y"), with = FALSE]
+dtable[, c(x, y)]      ## Just a vector!
+dtable[, .(x, y)]
+dtable[, x:y]
