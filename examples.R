@@ -3780,7 +3780,7 @@ seq(ISOdate(2004, 3, 28, 0, tz = ""), ISOdate(2004, 3, 28, 4, tz = ""), by = "30
 ##----------------------------------------
 ##----------------------------------------
 
-library(timeDate)
+require(timeDate)
 library(help = timeDate)
 
 Sys.getenv("TZ")
