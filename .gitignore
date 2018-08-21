@@ -32,6 +32,8 @@ temp/
 .Rapp.history
 
 # R Data files
+.RData
+.rds
 
 # Example code in package build process
 *-Ex.R
