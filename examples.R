@@ -661,7 +661,7 @@ box()
 title(main = "Sunflower Plot of Rounded N(0, 1)",
       xlab = "x", ylab = "y")
 axis(1)
-axis(2, at = 1, label = "ja", las = 1)
+axis(2, at = 1, labels = "ja", las = 1)
 
 ## bquote for partial substitution
 y <- paste(letters[1:4], "x", sep = ".")
@@ -2080,7 +2080,7 @@ text(1, 9.2, adj = 0,
 
 plot(c(0, 1), c(0, 1), type = "n")
 chemform <- "H[2]*O"
-text(0.5, 0.5, label = parse(text = chemform), cex = 2)
+text(0.5, 0.5, labels = parse(text = chemform), cex = 2)
 
 plot(-1:1, -1:1, type = "n", xlab = "Re", ylab = "Im")
 K <- 16; text(exp(1i * 2 * pi * (1:K) / K), col = 2)
@@ -4000,7 +4000,7 @@ timax <- seq(ISOdate(2002, 1, 1, 0, tz = ""), ISOdate(2002, 1, 2, 0, tz = ""),
 windows(10, 5)
 plot(timdat, rnorm(25), axes = FALSE, ty = "l", lwd = 2)
 axis(1, at = timax,
-   lab = formatC(as.POSIXlt(timax)$hour, format = "d", width = 2, flag = 0))
+   labels = formatC(as.POSIXlt(timax)$hour, format = "d", width = 2, flag = 0))
 axis(2)
 box()
 
