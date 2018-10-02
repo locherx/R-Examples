@@ -58,7 +58,7 @@ grid.rect(gp = gpar(col="red"))
 ##showViewport(col=rgb(0, 0, 1, 0.2))
 
 ## navigating to root viewport
-popViewport(n=0)
+popViewport(n = 0)
 
 ## creating a new viewport in the lower part of the device
 pushViewport(viewport(x = unit(0.05, "npc"),

@@ -352,3 +352,9 @@ dtable[, c("x", "y"), with = FALSE]
 dtable[, c(x, y)]      ## Just a vector!
 dtable[, .(x, y)]
 dtable[, x:y]
+
+dtable[, c(FALSE, TRUE, TRUE)]
+dtable[, c(FALSE, TRUE, TRUE), with = FALSE]
+
+dtable[, c(TRUE, TRUE, TRUE)]
+dtable[, c(TRUE, TRUE, TRUE), with = FALSE]
