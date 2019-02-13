@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Authors: Vasily Tolkachev, refined and extended by René Locher
-## Version: 2018-08-08
+## Version: 2018-02-13
 
 ## See also http://datatable.r-forge.r-project.org/datatable-faq.pdf
 
@@ -335,7 +335,7 @@ testDynProg3(dtab, "bit")  ## ok!
 
 ## Differences between data.table and data.frame ----------------------------------------
 dframe <- data.frame(x = c(2, NA, 3), y = 1:3, z = letters[1:3])
-dtable <- data.table(x = c(2, NA, 3), y = 1:3, z = letters[1:3])
+(dtable <- data.table(x = c(2, NA, 3), y = 1:3, z = letters[1:3]))
 
 str(dframe)            ## z is a factor!
 str(dtable)            ## z is a character string!
@@ -356,5 +356,3 @@ dtable[, x:y]
 dtable[, c(FALSE, TRUE, TRUE)]
 dtable[, c(FALSE, TRUE, TRUE), with = FALSE]
 
-dtable[, c(TRUE, TRUE, TRUE)]
-dtable[, c(TRUE, TRUE, TRUE), with = FALSE]

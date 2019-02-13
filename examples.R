@@ -1957,9 +1957,13 @@ windows(family = "X")
 ## font, font.axis, font.lab, font.main, font.sub
 
 windows()
+par(mar = c(4, 5, 2, 1))
 plot(1, 10, xlim = c(0, 11), ylim = c(0, 11), ty = "n",
-     xlab = expression(bold(Periodenmittel) ~~ NH[3]~~
-                         "[" ~paste(mu, g/m^3) ~"]"))
+     xlab = expression(Periodenmittel ~~ NH[3]~~
+                           "[" ~paste(mu, g/m^3) ~"]"),
+     ylab = expression(paste(bold(Periodenmittel), ~~NH[3],
+                         "  [", paste(mu, g/m^3), "]")))
+
 text(0, 10 , adj = 0,
      labels = expression(NH[4] ~ (paste(mu, mol))))
 text(4, 10, adj = 0,
@@ -1988,6 +1992,8 @@ text(0, 2, labels  =
      adj = 0)
 text(0, 1, labels = expression(M^(1) ~scriptstyle(Mm^(1))),
      adj = 0)
+text(0, 0, labels = expression(paste("[", degree, "C]")), adj = 0)
+text(2, 0, labels = expression([degree]), adj = 0)
 ## dev.off()
 
 plot(1, 10, xlim = c(0, 11), ylim = c(0, 11), ty = "n",
@@ -4971,9 +4977,6 @@ library(help = rcompgen)
 ## ----------------------------------------
 ## other interesting packages
 library(help = StatDataML)  ## XML-Austausch über
-
-
-
 
 
 
