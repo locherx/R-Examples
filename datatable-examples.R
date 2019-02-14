@@ -80,7 +80,11 @@ DT[1]
 DT[-c(5, 1),]
 DT[2, 2]
 DT[, v]
+DT[, .SD, .SDcols = "v"]
+DT[["v"]]
 DT[, 3]
+unlist(DT[, 3])
+
 DT[, names(DT)[names(DT) == "v"], with = FALSE]
 
 DT[, c(x, y)]
@@ -296,8 +300,8 @@ testScope2 <-
         dtbl.local[, bit2 := bit*3]
         return(dtbl.local)
     }
-dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
-                   L = sample(LETTERS[1:3], 30, replace = TRUE))
+dtab <- data.table(bit = sample(0:1, 10, replace = TRUE),
+                   L = sample(LETTERS[1:3], 10, replace = TRUE))
 
 dtab2 <- testScope2(dtab)
 dtbl.local ## error, QED
@@ -314,7 +318,7 @@ testDynProg1(dtab, bit)               ## error
 testDynProg1(dtab, quote(bit))        ## error
 testDynProg1(dtab, quote(quote(bit))) ## error
 
-## This is solution 1
+## This is solution a)
 testDynProg2 <-
     function(dtab, expr){
         e <- substitute(expr)
@@ -324,13 +328,32 @@ testDynProg2 <-
 testDynProg2(dtab, "bit")  ## error
 testDynProg2(dtab, .(bit)) ## ok!
 
-## This is solution 2
+## This is solution b)
 testDynProg3 <-
     function(dtab, nam){
        return(dtab[, nam, with = FALSE])
     }
 
 testDynProg3(dtab, "bit")  ## ok!
+
+## This is solution c)
+testDynProg4 <-
+    function(dtab, nam){
+        nam <- parse(text = nam)
+        return(dtab[, eval(nam)])
+    }
+
+testDynProg4(dtab, "bit")  ## ok!
+
+## Creating dynamically a new variable
+testDynProg5 <-
+    function(dtab, nam){
+        nam <- parse(text = paste0(nam, ":=2*bit"))
+        return(dtab[, eval(nam)])
+    }
+
+testDynProg5(dtab, "bit2")  ## ok!
+dtab
 
 
 ## Differences between data.table and data.frame ----------------------------------------
@@ -355,4 +378,4 @@ dtable[, x:y]
 
 dtable[, c(FALSE, TRUE, TRUE)]
 dtable[, c(FALSE, TRUE, TRUE), with = FALSE]
-
+dtable[is.na(x), x:=99]
