@@ -347,14 +347,13 @@ testDynProg4(dtab, "bit")  ## ok!
 
 ## Creating dynamically a new variable
 testDynProg5 <-
-    function(dtab, nam){
-        nam <- parse(text = paste0(nam, ":=2*bit"))
-        return(dtab[, eval(nam)])
+    function(dtab, jText){
+        j <- parse(text = jText)
+        return(dtab[, eval(j)])
     }
 
-testDynProg5(dtab, "bit2")  ## ok!
+testDynProg5(dtab, "bit3 := 3*bit")  ## ok!
 dtab
-
 
 ## Differences between data.table and data.frame ----------------------------------------
 dframe <- data.frame(x = c(2, NA, 3), y = 1:3, z = letters[1:3])
@@ -378,4 +377,4 @@ dtable[, x:y]
 
 dtable[, c(FALSE, TRUE, TRUE)]
 dtable[, c(FALSE, TRUE, TRUE), with = FALSE]
-dtable[is.na(x), x:=99]
+dtable[is.na(x), x := 99]
