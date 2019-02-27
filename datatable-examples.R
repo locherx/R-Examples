@@ -1,6 +1,6 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
-## Authors: Vasily Tolkachev, refined and extended by René Locher
+## Author: René Locher on the basis of a script of Vasily Tolkachev
 ## Version: 2018-02-13
 
 ## See also http://datatable.r-forge.r-project.org/datatable-faq.pdf
@@ -31,12 +31,10 @@ dat[11:20, age]
 
 ## to get data.table after subsetting, use list() or .() in j argument
 dat[11:20, list(age)]
-
-## equivalently:
 dat[11:20, .(age)]
 
 ## the usual data.frame subsetting style (with columns in j argument)
-dat[11:20, 1, with = FALSE]
+dat[11:20, 1]
 
 ## Find all rows where tax variable is equal to 216
 dat[tax == 216]
@@ -85,7 +83,7 @@ DT[["v"]]
 DT[, 3]
 unlist(DT[, 3])
 
-DT[, names(DT)[names(DT) == "v"], with = FALSE]
+DT[, "v", with = FALSE]
 
 DT[, c(x, y)]
 DT[, list(x, y)]
@@ -133,7 +131,7 @@ dat[crim >= 10, crim.f := "severe"]
 str(dat)
 ## crim.f is still a character, contrary to data.frame!
 
-dat[          , crim.f := as.factor(crim.f)][]
+dat[, crim.f := as.factor(crim.f)][]
 str(dat)
 
 table(dat$crim.f)
@@ -143,10 +141,12 @@ dat[, .(mean(medv), sd(medv)), by = .(rad.f, crim.f) ]
 
 
 ## Aggregating and merging --------------------
+
+## Aggregating
 dat[, .(meanNox = mean(nox), sdAge = sd(age), madBlack = mad(black)), by = rad.f]
 dat[, .(meanNox = mean(nox), sdAge = sd(age), madBlack = mad(black)), by = rad]
 
-## Combined aggregating and merging
+## Aggregating and merging results in original data.table
 dat[, meanNox := mean(nox), by = rad.f]
 dat
 
@@ -154,19 +154,19 @@ dat
 dat[, mean(nox), by = rad.f]
 
 ## Merging
-x <- data.table(k = 5:0, a = 20:25, zoo = 5:0 )
-y <- data.table(l = 1:6, b = 30:35, boo = 10:15)
+(x <- data.table(k = 5:0, a = 20:25, zoo = 5:0 ))
+(y <- data.table(l = 1:6, b = 30:35, boo = 10:15))
 setkey(x, k)
 setkey(y, l)
-## on = is not necessary when keys are set but
-## makes code more transparent
+## on = is not necessary when keys are set
+## BUT makes code more transparent
 
 merge(x, y, by.x = "k", by.y = "l", all.x = TRUE)
 merge(x, y, by.x = "k", by.y = "l", all.y = TRUE)
 
 ## This is faster and more efficient!! See FAQ
-y[x]
-x[y]
+x[y, on = c(k="l")]  ## Take all rows of y and join with corresponding rows of x
+y[x, on = c(l="k")]  ## Take all rows of x and join with corresponding rows of y
 
 ## This join is rarely used and only available in merge()
 merge(x, y, by.x = "k", by.y = "l", all = TRUE)
@@ -175,11 +175,11 @@ merge(x, y, by.x = "k", by.y = "l", all = TRUE)
 ## Now let’s create a variable of weighted means (mean_w),
 ## and then use it to create a variable for weighted standard deviation (std_w).
 
-dat[,  `:=`(mean_w = mean_w <- sum(medv*dis)/sum(dis),
-            std_w = sqrt(sum(dis*(medv - mean_w)^2 )/sum(dis))),
+dat[,  `:=`(meanW = meanW <- sum(medv*dis)/sum(dis),
+            stdW = sqrt(sum(dis*(medv - meanW)^2 )/sum(dis))),
     by = rad.f][]
 
-## To use some variables with long names, specify them in SDcols and use SD instead:
+## To use some variables with long names, specify them in .SDcols and use .SD instead:
 dat[, `:=`(x = sum(.SD[[1]]^2) / sum(.SD[[1]]),
            y = sum(.SD[[2]]^2) / sum(.SD[[2]]) ),
         by = rad.f,
@@ -192,8 +192,8 @@ dat[, {hist(log(crim), col = "royalblue3")
        grid()}]
 
 ## New data.table with dynamically created variables can be created by
-dat[, {list(mean_w = mean_w <- sum(medv*dis)/sum(dis),
-            std_w = sqrt( sum(dis*(medv - mean_w)^2 )/sum(dis))
+dat[, {list(meanW = meanW <- sum(medv*dis)/sum(dis),
+            stdW = sqrt( sum(dis*(medv - meanW)^2 )/sum(dis))
             )},
       by = rad.f]
 
@@ -252,8 +252,8 @@ dat[, lapply(.SD, mean), by =  crim.f, .SDcols = c("tax", "age")]
 dat[, .(.I, .GRP, .N), by =  crim.f]
 
 ## Runtime Length ID
-dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
-                   L = sample(LETTERS[1:3], 30, replace = TRUE))
+dtab <- data.table(bit = sample(0:1, 20, replace = TRUE),
+                   L = sample(LETTERS[1:3], 20, replace = TRUE))
 dtab[, .SD]
 rleid(dtab$bit)
 dtab[, bit, by = rleid(bit)]
@@ -282,8 +282,6 @@ testScope1 <-
         return(dtbl.local)
     }
 
-dtab <- data.table(bit = sample(0:1, 30, replace = TRUE),
-                   L = sample(LETTERS[1:3], 30, replace = TRUE))
 dtab1 <- testScope1(dtab)
 
 dtbl.local ## error, QED
@@ -292,7 +290,7 @@ dtab
 identical(dtab, dtab1)
 ## dtab AND dtab1 are identical!!!
 
-## data.tables are input by reference and not by copy!!!
+## data.tables are passed by reference and not by copy!!!
 ## Solution: Copy data.table within function first!
 testScope2 <-
     function(dtbl){
@@ -300,25 +298,23 @@ testScope2 <-
         dtbl.local[, bit2 := bit*3]
         return(dtbl.local)
     }
+
 dtab <- data.table(bit = sample(0:1, 10, replace = TRUE),
                    L = sample(LETTERS[1:3], 10, replace = TRUE))
-
 dtab2 <- testScope2(dtab)
 dtbl.local ## error, QED
 identical(dtab, dtab2)
 ## [1] FALSE, QED
 
-## The following lines do not work as intended
+## Adressing variables dynamically within a function ----------
 testDynProg1 <-
     function(dtab, nam){
-       return(dtab[, nam])
-    }
-testDynProg1(dtab, "bit")             ## error
-testDynProg1(dtab, bit)               ## error
-testDynProg1(dtab, quote(bit))        ## error
-testDynProg1(dtab, quote(quote(bit))) ## error
+       return(dtab[, nam, with = FALSE])
+   }
 
-## This is solution a)
+testDynProg1(dtab, "bit")  ## ok
+testDynProg1(dtab, .(bit)) ## error
+
 testDynProg2 <-
     function(dtab, expr){
         e <- substitute(expr)
@@ -326,33 +322,26 @@ testDynProg2 <-
     }
 
 testDynProg2(dtab, "bit")  ## error
-testDynProg2(dtab, .(bit)) ## ok!
+testDynProg2(dtab, .(bit)) ## ok
+testDynProg2(dtab, bit)    ## ok
 
-## This is solution b)
 testDynProg3 <-
-    function(dtab, nam){
-       return(dtab[, nam, with = FALSE])
-    }
-
-testDynProg3(dtab, "bit")  ## ok!
-
-## This is solution c)
-testDynProg4 <-
     function(dtab, nam){
         nam <- parse(text = nam)
         return(dtab[, eval(nam)])
     }
 
-testDynProg4(dtab, "bit")  ## ok!
+testDynProg3(dtab, "bit")  ## ok
+testDynProg3(dtab, bit)    ## error
 
-## Creating dynamically a new variable
-testDynProg5 <-
+## Creating dynamically a new variable ----------
+testDynProg4 <-
     function(dtab, jText){
         j <- parse(text = jText)
         return(dtab[, eval(j)])
     }
 
-testDynProg5(dtab, "bit3 := 3*bit")  ## ok!
+testDynProg4(dtab, "bit3 := 3*bit")  ## ok!
 dtab
 
 ## Differences between data.table and data.frame ----------------------------------------
