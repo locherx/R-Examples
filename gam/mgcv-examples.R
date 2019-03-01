@@ -1,7 +1,7 @@
 ###########################################################################
 ## mgcv.R
 ## Author: Simon Wood, modified by Rene Locher
-## Version 2017-12-31
+## Version 2019-03-01
 require(mgcv)
 ?gam
 
@@ -162,6 +162,15 @@ mtext(line = 2, "gamma = 10, without x3", cex = 2)
 summary(gam12)
 ## Extremely smooth
 
+gam13 <- gam(y ~ x0 + x1 + s(x2, bs = "cs"),
+           dat = dat.02, gamma = 10)
+windows(10, 10)
+plot(gam13, pages = 1, residuals = TRUE, all.terms = TRUE,
+     seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = 2, "gamma = 10, x1 = linear, no x3", cex = 2)
+summary(gam13)
+
+
 ## detach(package:mgcv)
 
 ## ----------------------------------------
@@ -255,8 +264,6 @@ f.scale1(dat.00, gam.00, 4.15)
 ## 0.9410424: Difference to gam.00 bigger than in lm, but still ok
 
 
-## ----------------------------------------
-## ----------------------------------------
 ## ----------------------------------------
 ## real data
 
