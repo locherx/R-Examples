@@ -1,13 +1,12 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
-## Author: René Locher on the basis of a script of Vasily Tolkachev
+## Author: René Locher
 ## Version: 2018-02-13
 
 ## See also http://datatable.r-forge.r-project.org/datatable-faq.pdf
 
 rm(list = objects(pattern = ".*"))
 
-library(MASS)
 library(data.table)
 
 ## data.table(Boston)
@@ -158,7 +157,7 @@ dtbl1
 dtbl1[, mean(nox), by = rad.f]
 
 ## Merging
-(x <- data.table(k = 5:0, a = 20:25, zoo = 5:0 ))
+(x <- data.table(k = 5:0, z = 20:25, zoo = 5:0 ))
 (y <- data.table(l = 1:6, b = 30:35, boo = 10:15))
 setkey(x, k)
 setkey(y, l)
@@ -195,9 +194,8 @@ dtbl1[, {hist(log(crim), col = "royalblue3")
          plot(rm, medv, pch = 16)
          grid()}]
 
-##???
+## Is there a way to pass the names of .SD to hist?
 dtbl1[, lapply(.SD, hist), .SDcols = c("crim", "age")]
-dtbl1[, lapply(seq(.SD), function(i, x) hist(x[[i]], .SD)), .SDcols = c("crim", "age")]
 
 ## New data.table with dynamically created variables can be created by
 dtbl1[, {list(meanW = meanW <- sum(medv*dis)/sum(dis),
@@ -260,28 +258,28 @@ dtbl1[, lapply(.SD, mean), by =  crim.f, .SDcols = c("tax", "age")]
 dtbl1[, .(.I, .GRP, .N), by =  crim.f]
 
 ## Runtime Length ID
-dtab <- data.table(bit = sample(0:1, 20, replace = TRUE),
-                   L = sample(LETTERS[1:3], 20, replace = TRUE))
-dtab[, .SD]
-rleid(dtab$bit)
-dtab[, bit, by = rleid(bit)]
-dtab[, bit, by = rleid(L)]
-setkey(dtab, bit)
-dtab[, bit, by = rleid(bit)]
+dtbl3 <- data.table(bit = sample(0:1, 20, replace = TRUE),
+                    L = sample(LETTERS[1:3], 20, replace = TRUE))
+dtbl3[, .SD]
+rleid(dtbl3$bit)
+dtbl3[, bit, by = rleid(bit)]
+dtbl3[, bit, by = rleid(L)]
+setkey(dtbl3, bit)
+dtbl3[, bit, by = rleid(bit)]
 
-## data.table within functions --------------------
+## data.tables within functions --------------------
 testScope0 <-
     function(dtbl){
         dtbl[, bit2 := bit*0.5]
         return(dtbl)
     }
 
-dtab1 <- testScope0(dtab)
-identical(dtab, dtab1)
-## dtab AND dtab1 are identical!!!
+dtbl4 <- testScope0(dtbl3)
+identical(dtbl3, dtbl4)
+## dtbl3 AND dtbl4 are identical!!!
 ## -> data.table are passed by reference (exception!!)
-dtab1
-rm(dtab1)
+dtbl4
+rm(dtbl4)
 
 testScope1 <-
     function(dtbl){
@@ -290,13 +288,13 @@ testScope1 <-
         return(dtbl.local)
     }
 
-dtab1 <- testScope1(dtab)
+dtbl4 <- testScope1(dtbl3)
 
 dtbl.local ## error, QED
-dtab1
-dtab
-identical(dtab, dtab1)
-## dtab AND dtab1 are identical!!!
+dtbl4
+dtbl3
+identical(dtbl3, dtbl4)
+## dtbl3 AND dtbl4 are identical!!!
 
 ## data.tables are passed by reference and not by copy!!!
 ## Solution: Copy data.table within function first!
@@ -307,9 +305,7 @@ testScope2 <-
         return(dtbl.local)
     }
 
-dtab <- data.table(bit = sample(0:1, 10, replace = TRUE),
-                   L = sample(LETTERS[1:3], 10, replace = TRUE))
-dtab2 <- testScope2(dtab)
+dtab2 <- testScope2(dtbl3)
 dtbl.local ## error, QED
 identical(dtab, dtab2)
 ## [1] FALSE, QED
@@ -375,3 +371,7 @@ dtable[, x:y]
 dtable[, c(FALSE, TRUE, TRUE)]
 dtable[, c(FALSE, TRUE, TRUE), with = FALSE]
 dtable[is.na(x), x := 99]
+
+
+## List if data.tables
+dtList <- list(dt1 = dtbl1, dt2 = dtab)
