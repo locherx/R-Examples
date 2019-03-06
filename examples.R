@@ -2074,8 +2074,10 @@ plot(1:10, type = "n", xlab = "", ylab = "", main  =  "plot math & numbers")
 theta <- 1.23
 mtext(bquote(hat(theta) = =  .(theta)), line =  .25)
 for(i in 2:9)
-    text(i, i + 1, substitute(list(xi, eta) = =  group("(", list(x, y), ")"),
-                            list(x = i, y = i + 1)))
+    text(i,
+         i + 1,
+         substitute(list(xi, eta) = =  group("(", list(x, y), ")"),
+                    list(x = i, y = i + 1)))
 ## note that both of these use calls rather than expressions.
 
 text(1, 10,  "Derivatives:", adj = 0)
