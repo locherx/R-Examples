@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-07-25
+## Version: 2019-08-09
 
 pathIn <- "dat/"
 
@@ -95,7 +95,7 @@ testfun()
 ## Measuring Run Time ----------------------------------------
 
 fun <- function(n = 10000, fun = function(x) x) {
-  # Purpose: Test if system.time works;   n: loop size
+  print("Purpose: Test if system.time works;   n: loop size")
   fun(for(i in 1:n) x <- mean(rt(1000, df = 4)))
 }
 
@@ -711,10 +711,10 @@ gc()
 ## -> http://cran.r-project.org/bin/windows/base/rw-FAQ.html, kap 2.9
 
 ## maximum amount of memory in MB obtained from the OS is reported
-memory.size(max = TRUE)/1048576
+memory.size(max = TRUE)
 
 ## amount of memory in use
-memory.size(max = FALSE)/1048576
+memory.size(max = FALSE)
 
 ## returns memory limit in MB
 memory.limit(size = NA)
@@ -2306,8 +2306,6 @@ close(DB)
 
 dim(dat)
 
-
-
 ## more data exchange packages
 library(ROracle)
 library(RSQLite)
@@ -2363,7 +2361,16 @@ huberM()  ## generalized Huber M-Estimator of location
 library(robustbase)
 library(help = robustbase)
 ## see X:\Public\BAFU\Fehlerrechnung
+res <- lmrob(Sepal.Width ~ Species*Petal.Length, data = iris)
+summary(res)
+## Robust residual standard error: 0.2999
 
+res1 <- lmrob(Sepal.Width ~ Species + Petal.Length, data = iris)
+anova(res, res1)
+
+res2 <- lmrob(Sepal.Width ~ Species:Petal.Length, data = iris)
+summary(res2)
+## Robust residual standard error: 0.3042
 
 ## alternative packages
 library("MASS")
@@ -2464,7 +2471,9 @@ x <- 0:10
 y <- x + x^2 + rnorm(11)
 xy <- data.frame(x, y)
 r.lm <- lm(y~x, xy)
-termplot(r.lm, partial = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
+termplot(r.lm, partial.resid = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
+termplot(r.lm, terms = 1, partial.resid = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
+termplot(r.lm, terms = "x", partial.resid = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
 
 
 ## oder
@@ -3108,9 +3117,7 @@ colnames(res$res) <- c("min", "max")
 res
 data.frame(res$fac, res$res)
 
-#########################
-
-## Digesting two lists
+## Digesting lists ----------------------------------------
 x <- list(a = 1:7, b = 14:28)
 y <- list(a = 1:5, b = 6:10)
 z <- list(a = 1:5, b = 6:10)
@@ -3123,14 +3130,19 @@ lapply(X = seq(along = x), FUN = function(i, c, d) {mean(c[[i]]) * mean(d[[i]])}
 mapply(FUN = function(c, d) {mean(c) * mean(d)}, x, y)
 mapply(mean, x) * mapply(mean, y)
 
+## or
+mapply(FUN = function(c, d) {mean(c) * mean(d)}, x, y, SIMPLIFY = FALSE)
+Map(f = function(c, d) {mean(c) * mean(d)}, x, y)
+
 lapply(x,
        function(x) {
-           x[x < 15] <-  2
+           x[x < 17] <-  2
            return(x)})
 
 x <- c(3, 8)
 y <- 10:15
 lapply(seq(along = x), FUN = function(i, x, y) x[i] + y, x, y)
+
 unlist(lapply(seq(along = x), FUN = function(i, x, y) x[i] + y, x, y))
 
 x <- 0:4
@@ -3139,7 +3151,19 @@ lapply(X = seq(along = x), FUN = function(i, x) 0:x[i], x)
 p <- list(a = 1:7, b = 3:15)
 lapply(X = p, FUN = function(x) 1:length(x))
 
+## Do not use lapply() for side effects ----------------------------------------
+## Beware!!! This does not work!!!
+res <- rep(NA, 3)
+lapply(X = 1:3, FUN = function(i) res[i] <- i)
+res
 
+## This works but is NOT recommended!!!
+## Use a for loop instead!
+lapply(X = 1:3, FUN = function(i, res) res[i] <<- i)
+res
+
+
+## Aggregating data.frames and lists ----------------------------------------
 xyz <- data.frame(x = c(rep("A", 50), rep("B", 50)),
                   y = rep(c(rep("a", 25), rep("b", 25)), 2),
                   z = rnorm(100),
@@ -3810,7 +3834,7 @@ holiday(years, c("NewYearsDay", "Easter", "CHAscension", "Pentecost",
 
 holiday(years, c("LaborDay", "EasterMonday", "PentecostMonday", "ChristmasEve", "BoxingDay", "DENewYearsEve"))
 
-
+holiday(2020, c("Easter", "RogationSunday", "CHAscension", "Pentecost", "CHSechselaeuten", "CHKnabenschiessen"))
 
 Easter(years)
 GoodFriday(years)
@@ -4615,8 +4639,12 @@ anova(res)
 drop1(res, test = "F")  ## better because hierarchy is respected!!
 
 attributes(res)
-comment(res) <- "linear regression"
+comment(res) <- "This is the result of a linear regression"
+
 attributes(res)
+attr(res, "comment")
+structure(res)
+str(res)
 
 res <- lm(Sepal.Length ~ Petal.Length + Species, iris)
 anova(res)
@@ -4675,31 +4703,75 @@ library(hier.part)
 library(amap)  # robust hierarchical Clustering
 
 ## Principal component analysis
+dat <- data.frame(Maths = c(80, 90, 95, 100),
+                  Science = c(85, 85, 80, 90),
+                  English = c(60, 70, 40, 80), Music = c(55, 45, 50, 60))
+rownames(dat) <- c("John", "Mike", "Kate", "Ann")
 
-dat <- data.frame(Maths = c(80, 90, 95), Science = c(85, 85, 80), English = c(60, 70, 40), Music = c(55, 45, 50))
-rownames(dat) <- c("John", "Mike", "Kate")
-pc <- prcomp(dat)
-str(pc)
+## dat <- USArrests
 
-## Eigenvectors = Loadings in results of princomp
-pc$rotation
+## Identical results for the following 3 calls
+pc1 <- prcomp(dat, center = TRUE, scale = TRUE)
+pc2 <- prcomp(dat,
+              center = apply(dat, MARGIN = 2, mean),
+              scale = apply(dat, MARGIN = 2, sd))
+pc3 <- prcomp(scale(dat, center = TRUE, scale = TRUE), center = FALSE, scale = FALSE)
+str(pc1)
+## prcomp() is numerically *more stable* than princomp()
+## prcomp() can deal also with more variables than observations
+## When variables are of different nature, a scaling must be done before applying PCA
 
-pc
+## Eigenvectors. Corresponds to loadings in results of princomp
+pc1$rotation
+str(structure(pc1$rotation, class = "loadings"))
+stats:::print.loadings(pc1$rotation)
+## SS loadings, Proportion Var, Cumulative Var not interpretable for pure PCA!
 
-predict(pc)
+pc1$rotation
+pc2$rotation
+pc3$rotation
+
 ## (component) scores = (factor) scores
 ## observations in principal component coordinates
-## scores are automatically calculated only in princomp!
-
-pc2 <- princomp(USArrests)
-str(pc2)
-## loadings:
-## Principal components (eigenvectors of covariance matrix) in original coordinates
-
-pc2$scores
+predict(pc1)
 predict(pc2)
+predict(pc3)
 
-biplot(pc2)
+pcX1 <- princomp(dat, cor = TRUE)
+str(pcX1)
+## princom() has an easier interface
+## loadings:
+## Principal components (eigenvectors of correlation matrix) in original coordinates
+loadings(pcX1)
+## cf. with
+pc1$rotation
+
+## (component) scores = (factor) scores
+## observations in principal component coordinates
+## Beware difference between predict(pcX1) and predict(pc1)
+## -> Variances are computed with N!
+pcX1$scores
+predict(pcX1)
+## cf. with
+predict(pc1)
+
+windows(20, 10)
+par(mfrow = c(1, 2))
+biplot(pc1)
+biplot(pc1, pc.biplot = TRUE) ## Different scaling of axis
+
+biplot(pc1)
+biplot(pcX1)
+
+screeplot(pc1)
+screeplot(pc2)
+
+## Robust alternative
+pcR3 <- prcomp(dat,
+              center = apply(dat, MARGIN = 2, median),
+              scale = apply(dat, MARGIN = 2, mad))
+biplot(pc3)
+biplot(pcR3, pc.biplot = TRUE) ## Different scaling of axis
 
 ## Dataset
 load(file = paste0(pathIn, "WAU.RDat"))
