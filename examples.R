@@ -1,9 +1,9 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2019-08-09
+## Version: 2019-11-18
 
-pathIn <- "dat/"
+pathIn <- "data/"
 
 options(width = 72)       ## width of default emacs
 options(max.print = 1000) ## stops printing after 1000 values
@@ -1894,6 +1894,10 @@ print("\344 \304 \366 \326 \374 \334 \265")
 
 ## Umlaute work
 regexpr("ü", c("Grüsch", "Buh"))
+
+## Searching for special characters
+regexpr("\\+", c("a+b", "a-b"))
+
 
 cat("CR \n this will be wiped out\r LF \n newline\n")
 
