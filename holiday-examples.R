@@ -1,3 +1,5 @@
+## holiday-examples.R
+## Calculating holidays
 ## Feiertage bestimmen
 ## vgl. auch https://www.feiertagskalender.ch/index.php?geo=3056
 

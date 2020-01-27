@@ -3,7 +3,7 @@
 ## Author: René Locher
 ## Version: 2018-07-25
 
-pathIn <- "dat/"
+pathIn <- "data/"
 
 options(width = 72)       ## width of default emacs
 options(max.print = 1000) ## stops printing after 1000 values

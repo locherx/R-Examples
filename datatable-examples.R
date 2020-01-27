@@ -1,5 +1,5 @@
 ## -*- coding: utf-8 -*-
-## examples.R
+## datatable-examples.R
 ## Authors: Vasily Tolkachev, refined and extended by René Locher
 ## Version: 2018-02-13
 
