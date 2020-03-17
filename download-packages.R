@@ -1,6 +1,6 @@
-## download_packages.R
+## download-packages.R
 ## Author: Rene Locher, rene.locher@zhaw.ch
-## Version 2019-12-05
+## Version 2020-02-18
 
 ## -------
 ## in emacs automatisierbar:
@@ -106,13 +106,17 @@ install.packages(pkgs=c("IDPmisc"),
 favPack <-
     c("akima",        ## 2- and 3D-Interpolation
       ##"car",
+      "roxygen2",     ## for documentation purposes, ## sudo apt install libcurl4-openssl-dev
       "IDPmisc",
       "SwissAir",
       "sfsmisc",
       "microbenchmark",
       "ellipse",
-      "gbm",    ## von Statistiker implementiertes Boosting
+      ##"gbm",    ## von Statistiker implementiertes Boosting
       "xgboost",
+      "locpol",   ## Splines
+      "pspline",  ## Splines
+      "numDeriv",
       "gridBase",
       "gridDebug",
       "gridExtra",
@@ -121,19 +125,19 @@ favPack <-
       ## "histogram",    ## better histograms
       "pheatmap",     ## better heatmaps
       "RColorBrewer", ## referenced in IDPmisc
-      "DAAG",         ## referenced in IDPmisc
       "directlabels", ## setting lables on lattice plots automagically
       "gplots",       ## textplot = printing within figures, enhanced Heatmap,
       "ggplot2",      ## Hadley
+      ## "scales",    ## Hadley package for pretty scales
       ## "ggplus",    ## Lattice-Funtionalität mit ggplot, erst auf Github
       ## "xtable",    ## writing latex tables (late updater)
       ## "huxtable",  ## Creating LaTeX and HTML tables, with a friendly, modern interface.
       "dplyr",        ## Hadley-Tools for splitting, applying and combining data
       "tidyr",        ## Hadley-Reshape
       ## "reshape2",  ##
-      "doBy",         ## Groupwise summary statistics, lapplyBy: Formula based version of lapply, recodeVar: Recode values of a vector
+      ## "doBy",      ## Groupwise summary statistics, lapplyBy: Formula based version of lapply, recodeVar: Recode values of a vector
       "Matrix",
-      ## "expm",         ## matrix to power
+      ## "expm",      ## matrix to power
       "mgcv",         ## gam
       "gam",
       "lme4",         ## mixed effects
@@ -148,17 +152,16 @@ favPack <-
       "rgeos",
       "Rcpp",
       "rmarkdown",
-      "RODBC",
-      "RODBCext",
+      ## "RODBC",
+      ## "RODBCext",
       ## "raster",     ## support for very large files
       ## "gpclib",     ## must be compiled before installing
       ## "maptree",    ## Graphing, pruning, and mapping models from hierarchical clustering, classification and regression trees.
       ## "partitions",   ## Constructing compositional data
       ## "ade4",         ## Among others: Ternary plots
       ## "vcd",          ## Among others: Ternary plots
-      ## "cluster",      ## contained in base
       ## "seriation",    ## PC. Clustering, Classification
-      ## "mclust",       ##
+      ## "mclust",          ##
       ## "clue",         ## Clustering, Classification
       ## "clusterSim",
       ## "fpc",          ## DBSCAN, Density-Based Spatial Clustering of Applications with Noise
@@ -169,10 +172,8 @@ favPack <-
       "randomForest",
       "randomForestSRC",## For survival, regression and classification. Parallel processing!
       "ranger",         ## !!Fastest random forest: https://www.jstatsoft.org/article/view/v077i01!!
-      "C50",            ## C50 Algorithm where only (n-1) splits are made for a factor with n levels
+      ## "C50",            ## C50 Algorithm where only (n-1) splits are made for a factor with n levels
       "tcltk2",         ##
-      "rJava",          ##
-      "XLConnect",      ## Excel-Interface
       "foreign",        ## Read Data Stored by Minitab, S, SAS, SPSS, Stata,Systat, dBase, ...
       "memisc",         ## Reading SPSS and Stata Survey Data Sets
       "data.table",     ## Hadley for handling big data (CSV files > 1GB)
@@ -183,8 +184,8 @@ favPack <-
       ## "xml2",        ## Prognolite, called by "httr"
       "httr",           ## Supports http(s) communication. Prognolite
       ## "ROAuth",      ## Prognolite, called by "httr"
-      "globals",        ## utility to screen functions
-      "scales",         ## Packages for smooth first and second deviations
+      "RJSONIO",        ## Reading and writing json format
+      ## "globals",     ## utility to screen functions
       "robfilter"       ## Packages for smooth first and second deviations
       )
 
@@ -195,10 +196,10 @@ install.packages(pkgs = favPack,
 ##   installation of package 'highlight' had non-zero exit status
 ## 2018-01-23
 
+## sudo apt install libcurl4-openssl-dev
+favPack2 <- c("numDeriv")
 
-favPack2 <- c("RCurl", "jsonlite", "httr")
-
-install.packages(pkgs=favPack2,
+install.packages(pkgs = favPack2,
                  repos = options()$repos, dependencies = TRUE)
 
 ## Installing from local directory

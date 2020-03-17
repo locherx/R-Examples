@@ -5,13 +5,13 @@
 
 pathIn <- "data/"
 
+options(help_type = "html")
 options(width = 72)       ## width of default emacs
-options(max.print = 1000) ## stops printing after 1000 values
+options(max.print = 300) ## stops printing after 300 values
 options(contrasts = c("contr.treatment", "contr.poly"))
 
-## show compiled HTML help
-## Once installed, it cannot be unloaded during session
-options(chmhelp = TRUE) ## does not work with emacs
+## Show help in browser
+options(help_type = "html")
 
 onError <- function() {
     graphics.off()
@@ -4571,9 +4571,113 @@ plot(r.g101)
 plot(r.gp101$"lo(LPNem)"$x, r.gp101$"lo(LPNem)"$y)
 plot(r.gp101$"lo(LPNem)"$x, r.gp101$"lo(LPNem)"$y + resid(r.g101))
 
-########################################
-## constraint B-splines
+## constraint B-splines ----------------------------------------
 library(cobs)
+
+
+## Local Polynomial estimation ----------------------------------------
+require(locpol)
+
+N <- 250
+xeval <- 0:100/100
+##  ex1
+d <- data.frame(x = runif(N))
+d$y <- d$x^2 - d$x + 1 + rnorm(N, sd = 0.1)
+r <- locpol(y~x,d)
+plot(r)
+##  ex2
+d <- data.frame(x = runif(N))
+d$y <- d$x^2 - d$x + 1 + (1+d$x)*rnorm(N, sd = 0.1)
+r <- locpol(y~x,d)
+plot(r)
+## notice:
+rr <- locpol(y~x,d,xeval=runif(50,-1,1))
+## notice x has null dens. outside (0,1)
+## plot(rr) raises an error, no conf. bands outside (0,1).
+## length biased data !!
+d <- data.frame(x = runif(10*N))
+d$y <- d$x^2 - d$x + 1 + (rexp(10*N,rate=4)-.25)
+posy <- d$y[ whichYPos <- which(d$y>0) ];
+d <- d[sample(whichYPos, N,prob=posy,replace=FALSE),]
+rBiased <- locpol(y~x,d)
+r <- locpol(y~x,d,weig=1/d$y)
+plot(d)
+points(r$lpFit[,r$X],r$lpFit[,r$Y],type="l",col="blue")
+points(rBiased$lpFit[,rBiased$X],rBiased$lpFit[,rBiased$Y],type="l")
+curve(x^2 - x + 1,add=TRUE,col="red")
+
+## Local derivation with compDerEst ----------
+size <- 200
+sigma <- 0.05
+deg <- 1
+kernel <- EpaK
+xeval <- 0:100/100
+regFun <- function(x) (0.2*x^3 + (x - 0.5)^2)
+x <- runif(size)
+y <- regFun(x) + rnorm(x, sd = sigma)
+d <- data.frame(x, y)
+plot(d$x, d$y)
+
+str(compDerEst(x, y, p = 5))
+
+## ----------------------------------------
+require(pspline)
+
+X11()
+par(mfrow = c(3,1),
+    mar = c(0, 4, 0, 0.5),
+    oma = c(3, 0, 2, 0))
+nOrder <- 6 ## 4
+sPar <- 0.0001 ## 0.0001
+xStart <- 2
+sD  <- 0  ## 0.02
+
+## nOrder
+
+x <- seq(xStart, 10, 0.1)
+y <- sin(10*pi/x) + rnorm(length(x), sd = sD) #just an example
+plot(x, y,
+     ann = FALSE, axes = FALSE)
+mtext(text = paste0("norder = ", nOrder, ", spar = ", sPar, ", sd = ", sD),
+      line = 0.5,
+      outer = TRUE)
+box()
+axis(2, las = 2)
+
+psp <- smooth.Pspline(x, y,
+                      norder = nOrder,
+                      spar = sPar)
+x2 <- seq(xStart, 10, 0.01)
+lines(x2,
+      predict(psp, x2, nderiv = 0), col = "red",
+      ann = FALSE, axes = FALSE)
+
+plot(x2,
+     predict(psp, x2, nderiv = 1), type = "l",
+     ann = FALSE, axes = FALSE)
+abline(h = 0, col = "grey")
+box()
+axis(2, las = 2)
+
+plot(x2,
+     predict(psp, x2, nderiv = 2), type = "l",
+     ann = FALSE, axes = FALSE)
+abline(h = 0, col = "grey")
+box()
+axis(1)
+axis(2, las = 2)
+
+
+## Symbolic and Algorithmic Derivatives ----------------------------------------
+?deriv
+
+## Numeric Derivatives ----------------------------------------
+library(numDeriv)
+?genD
+x <- (0:100)/100
+fun <- function(x) (0.2*x^3 + (x - 0.5)^2)
+xy <- data.frame(x, y)
+plot(x, fun(x))
 
 
 

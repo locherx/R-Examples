@@ -1,7 +1,10 @@
 ###########################################################################
 ## mgcv.R
-## Author: Simon Wood, modified by Rene Locher
-## Version 2017-12-31
+## Examples to cubic splines
+## Author: Simon Wood, enriched by Rene Locher
+## Version 2018-03-16
+options(help_type = "html", width = 200)
+
 require(mgcv)
 ?gam
 
@@ -34,131 +37,142 @@ y <- 2*x0 + f1(x1) + f2(x2) + f3(x3) + e
 x0 <- factor(x0)
 dat.02 <- data.frame(y, x0, x1, x2, x3)
 
-## fit and plot...
+## fitting
 gam00 <- gam(y ~ x0 + s(x1) + s(x2) + s(x3), dat = dat.02)
 
-windows(10, 10)
+## Partial residual plots
+?plot.gam
+x11()
 plot(gam00, pages = 1, residuals = TRUE, all.terms = TRUE, shade = TRUE, shade.col = 2)
 
 ## better coverage intervals
-plot(gam00, pages = 1, residuals = TRUE, , all.terms = TRUE, seWithMean = TRUE)
+x11()
+plot(gam00, pages = 1, residuals = TRUE, all.terms = TRUE, seWithMean = TRUE)
+mtext(text = "Thin plate: s(x2)", line = 2)
 
-## just parametric term alone...
+## Parametric term only
+x11()
 termplot(gam00, terms = "x0", se = TRUE)
 
 par(mfrow = c(2, 2))
+ylim <- c(-9, 12)
 x <- 0:1000/1000
 for (i in 1:3) {
     plot(gam00, select = i, rug = FALSE, se = TRUE, residuals = TRUE,
-         cex = 1, pch = 21, all.terms = TRUE)
-    eval(parse(text = paste0("fx <- f",i,"(x)")))
+         ylim = ylim, cex = 1, pch = 21)
+    eval(parse(text = paste0("fx <- f", i, "(x)")))
     fx <- fx - mean(fx)
     lines(x, fx, col = "red") ## overlay `truth'
 }
-mtext(line = -2, "Fit including true values in red", cex = 2, outer = TRUE)
-
-ylim <- c(-8, 8)
-
-windows(10, 10)
-plot(gam00, pages = 1, residuals = TRUE, all.terms = TRUE,
-     seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-summary(gam00)
+termplot(gam00, terms = "x0", rug = FALSE, se = TRUE, residuals = TRUE,
+         ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, "Fit including true values in red", outer = TRUE)
 
 gam01 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs") + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam01, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-mtext(line = 2, "reference", cex = 2)
-## identical plot
+mtext(line = -2, 'Cubic spline regression with shrinking: s(x2, bs = "cs")', outer = TRUE)
+## First 3 figures are identical, ylim ignored for parametric terms
 
-summary(gam02)
-## edf(s(x2)) = 1.8877
+summary(gam00)
+summary(gam01)
+## Compare degrees of freedoms (edf) of smooth terms
+##             edf Ref.df     F p-value
+## s(x1) 1.852e+00      9 10.55  <2e-16 ***
+## s(x2) 6.881e+00      9 44.78  <2e-16 ***
+## s(x3) 5.626e-07      9  0.00   0.892
 
+## Maximum number of knots k too small
 gam02 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 2) + s(x3, bs = "cs"),
              dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam02, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'k too small: s(x2, bs = "cs", k = 2)', outer = TRUE)
 summary(gam02)
 ## edf(x2) = 1.9 ~ 2
 ## k is for sure too small
 
+## k adequate
 gam03 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 8) + s(x3, bs = "cs"),
              dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam03, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'k adequate: s(x2, bs = "cs", k = 8)', outer = TRUE)
 summary(gam03)
 ## edf(x2) = 6.4 <~ 8
 
+## k = 20 is not much different from k = 8
 gam04 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20) + s(x3, bs = "cs"),
              dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam04, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'k = 8 and k = 20 are adequate: s(x2, bs = "cs", k = 20)', outer = TRUE)
 summary(gam04)
 ## edf(x2) = 7.8 < 20
 ## k is big enough for sure
 
+## Smoothing parameter too strong
 gam05 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 1) +
                  s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam05, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'Smoothing parameter too weak: s(x2, bs = "cs", k = 20, sp = 1)', outer = TRUE)
 summary(gam05)
 ## edf(x2) = 17.9 < 20
 ## too shaky
 
 gam06 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 10) + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+x11()
 plot(gam06, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'Smoothing parameter too weak: s(x2, bs = "cs", k = 20, sp = 10)', outer = TRUE)
 summary(gam06)
 ## still too shaky
 
-gam07 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 20) + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+gam07 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 100) + s(x3, bs = "cs"), dat = dat.02)
+x11()
 plot(gam07, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'Smoothing parameter ok: s(x2, bs = "cs", k = 20, sp = 100)', outer = TRUE)
 summary(gam07)
-## still too shaky
+## Smoothing parameter ok
 
-gam08 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 200) + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
-plot(gam08, pages = 1, residuals = TRUE, all.terms = TRUE,
-     seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-summary(gam08)
-## Properly smooth
-
-gam09 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 40, sp = 200) + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+gam09 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 40, sp = 100) + s(x3, bs = "cs"), dat = dat.02)
+x11()
 plot(gam09, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'Sp  depends on k: s(x2, bs = "cs", k = 40, sp = 100)', outer = TRUE)
 summary(gam09)
 ## again too shaky -> sp depends from k!
 
-gam10 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 2000) + s(x3, bs = "cs"), dat = dat.02)
-windows(10, 10)
+gam10 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs", k = 20, sp = 1000) + s(x3, bs = "cs"), dat = dat.02)
+x11()
 plot(gam10, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
+mtext(line = -2, 'Too smooth: s(x2, bs = "cs", k = 20, sp = 1000)', outer = TRUE)
 summary(gam10)
-## Extremely smooth
+## Too smooth
 
 gam11 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs") + s(x3, bs = "cs"),
            dat = dat.02, gamma = 10)
-windows(10, 10)
+x11()
 plot(gam11, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-mtext(line = 2, "gamma = 10", cex = 2)
+mtext(line = 2, "gamma = 10 does not have the effect intended")
 summary(gam11)
 
 
 gam12 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs"),
            dat = dat.02, gamma = 10)
-windows(10, 10)
+x11()
 plot(gam12, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-mtext(line = 2, "gamma = 10, without x3", cex = 2)
+mtext(line = 2, "gamma = 10, without x3 is now really smooth!!", cex = 2)
 summary(gam12)
 ## Extremely smooth
 
