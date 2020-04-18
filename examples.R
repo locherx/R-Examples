@@ -1,11 +1,10 @@
 ## -*- coding: utf-8 -*-
 ## examples.R
 ## Author: René Locher
-## Version: 2018-07-25
+## Version: 2020-04-18
 
 pathIn <- "data/"
 
-options(help_type = "html")
 options(width = 72)       ## width of default emacs
 options(max.print = 300) ## stops printing after 300 values
 options(contrasts = c("contr.treatment", "contr.poly"))
@@ -24,6 +23,15 @@ rm(list = objects())  ## deletes workspace, sparing all dot objects
 rm(list = objects(all.names = TRUE))  ## deletes everything
 
 options()
+
+## Give environment variables back:
+R.home()  # R_HOME
+R.home("bin")
+R.home("doc")
+R.home("etc")
+Sys.getenv("R_HOME")
+Sys.getenv("R_USER")
+Sys.getenv("R_ENVIRON_USER")
 
 warnings() ## print last warnings
 warning()  ## clear last warnings
@@ -91,6 +99,17 @@ library(devtools)
 install_github("Oliver4242/testdemo")
 library(testdemo)
 testfun()
+
+## Basic data types ----------------------------------------
+is(5L)
+is(5)
+as.octmode(10)
+
+## Bitwise Logical Operations ----------------------------------------
+bitwAnd(5L, 4L)
+bitwAnd(8L, 4L)
+bitwAnd(7L, 4L)
+bitwAnd(19L, 17L)
 
 ## Measuring Run Time ----------------------------------------
 
@@ -2008,8 +2027,6 @@ text(1, 8,
      labels = parse(text = paste0(x, '~"["~paste(mu, g/m^3)~"]"')),
      adj = 0)
 
-
-
 text(8, 1, labels = expression(bgroup("}", atop("blabla", "what so ever"), "")))
 
 text(5, 5, labels = "}", cex = 3)
@@ -2018,22 +2035,12 @@ text(5, 5, labels = "}", cex = 3)
 plot(1, 10, xlim = c(0, 11), ylim = c(0, 11), ty = "n", )
 
 ## This works only for scalars!!
-y1 <- "That works!"
+y1 <- "This works!"
 text(5, 2, labels = substitute(bold(y), list(y = y1)), adj = 0)
 
-x <- 1:4
-y2 <- paste(letters[1:4], "x", sep = ".")
-text(x = x, y = x - 1, labels = y2, adj = 0)
-
-## works not as intended! Takes only the first element
-text(x, x, adj = 0, label = substitute(bold(y), list(y = y2)))
-
-## This will work:
-for (ii in 1:length(y2)) {
-    text(ii, ii + 1,
-         label = substitute(bold(y), list(y = y2[ii])),
-         adj = 0)
-}
+e <- expression()
+for (i in 1:4) e <- c(e, eval(substitute(expression(x[k]), list(k = i))))
+text(x, x, labels = e)
 
 ## Another example: .() makes bquote evaluating the expression inside
 for (ii in 1:length(y2)) {
@@ -3121,6 +3128,8 @@ lapply(X = seq(along = x), FUN = function(i, c, d) {mean(c[[i]]) * mean(d[[i]])}
 mapply(FUN = function(c, d) {mean(c) * mean(d)}, x, y)
 mapply(mean, x) * mapply(mean, y)
 
+mapply(FUN = function(c, d) {mean(c) * mean(d)}, x, y, SIMPLIFY = FALSE)
+
 lapply(x,
        function(x) {
            x[x < 15] <-  2
@@ -4160,8 +4169,12 @@ strsplit("[1 2 3 4]", "[[:space:][:punct:]]")
 grep("^a", c("fritz", "berta", "albert"))  ## ^ beginning of string
 grep("a$", c("fritz", "berta", "albert"))  ## $ end of string
 
-## metacharacters must stay within []
+## meta characters must stay within [] or excaped!
+## \ is also a meta character!
 grep("[.]", c("fritz", "berta.1", "albert"))
+grep("\\.", c("fritz", "berta.1", "albert"))
+
+grep("t", c("fritz", "berta.1", "albert"))
 
 grep("[b-z]", c("a", "A"))
 grep("[a-z]", c("a1", "A2"))
@@ -4332,9 +4345,8 @@ formatC(0, format = "fg", big.mark = "'", width = 10)
 formatC(1, format = "d", width = 2, flag = 0)
 
 prettyNum(1, format = "d", width = 2)
-formatC(1, format = "d", width = 2)
-
-
+formatC(1, format = "d", width = 4)
+formatC(100, format = "d", width = 4)
 
 ## see also format.default
 format(1000000)
@@ -4360,7 +4372,6 @@ print(test, digits = 2)
 a <- 999
 sprintf("Die Zahl %d wird in den Text eingefügt", a)
 sprintf("This is %d in hexadecimal: %X", a, a)
-
 
 ## Formatierter Output für einzelne Zahlen
 lapply(c("a", "ABC", "and an even longer one"),

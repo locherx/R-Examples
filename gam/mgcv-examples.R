@@ -15,7 +15,7 @@ require(mgcv)
 ## http://127.0.0.1:28268/library/mgcv/html/s.html
 ?s         ## for individual smoothing
 ?choose.k  ## for definition of s(term, k=)
-?smooth.construct.cr.smooth.spec ## for cyclic cubic spline s(sp="cc",...)
+?smooth.construct.cr.smooth.spec ## for cyclic cubic spline s(x, bs="cc",...)
 
 ## ----------------------------------------
 set.seed(0)
@@ -163,7 +163,7 @@ gam11 <- gam(y ~ x0 + s(x1, bs = "cs") + s(x2, bs = "cs") + s(x3, bs = "cs"),
 x11()
 plot(gam11, pages = 1, residuals = TRUE, all.terms = TRUE,
      seWithMean = TRUE, ylim = ylim, cex = 1, pch = 21)
-mtext(line = 2, "gamma = 10 does not have the effect intended")
+mtext(line = 2, "gamma = 10 results in 3 shaky partial residual plots")
 summary(gam11)
 
 
