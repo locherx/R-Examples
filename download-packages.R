@@ -145,6 +145,7 @@ favPack <-
       "robustbase",   ## robust regressions
       "glmnet",       ## more modern, maintained lasso
       ## "lars",      ## lasso used by rkst
+      "effects",      ## termplots with interactions
       "sp",           ## spatial statistics
       "gstat",        ## for RAIRMO
       "maps",
@@ -197,7 +198,7 @@ install.packages(pkgs = favPack,
 ## 2018-01-23
 
 ## sudo apt install libcurl4-openssl-dev
-favPack2 <- c("numDeriv")
+favPack2 <- c("effects")
 
 install.packages(pkgs = favPack2,
                  repos = options()$repos, dependencies = TRUE)

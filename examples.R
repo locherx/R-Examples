@@ -2468,13 +2468,28 @@ hatvalues(model.matrix(lm.object))
 x <- 0:10
 y <- x + x^2 + rnorm(11)
 xy <- data.frame(x, y)
-r.lm <- lm(y~x, xy)
-termplot(r.lm, partial = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
-
+lm1 <- lm(y~x, xy)
+termplot(lm1, partial = TRUE, se = TRUE, main = TRUE, smooth = panel.smooth)
 
 ## oder
 library(car)
-cr.plot(r.lm, x)
+crPlot(lm1, x)
+
+## Partial residuals with interaction terms
+set.seed(123)
+n <- 12  ## with small n it is easier to compare the plots
+x1 <- rnorm(n, mean = 15)
+xf <- rep(c(0, 1), c(n/2, n - n/2))
+dd <- data.frame(y = x1 + x1 * 4 * xf + rnorm(n, 0, sd = 0.2),
+                 x1 = x1, xf = factor(xf))
+lm2 <- lm(y ~ x1 * xf, data = dd)
+
+library(effects)
+plot(effect("x1*xf", lm2, partial.residuals = TRUE))
+plot(Effect(c("x1", "xf"), lm2, partial.residuals = TRUE), nrow = 1)
+
+plot(Effect(c("x1", "xf"), lm2, partial.residuals = TRUE,
+            xlevels = list(x1 = 1:30)))
 
 
 ## model selection
@@ -3545,6 +3560,8 @@ as.numeric(ct.CET-ct.UTC, units = "hours")
 as.numeric(ct.CET-ct.UTC, units = "days")
 as.numeric(ct.CET-ct.UTC, units = "weeks")
 as.numeric(ct.CET-ct.UTC, units = "auto") ## smallest units with value > 1
+
+as.numeric(as.POSIXct("2019-01-01"))/(24*3600)
 
 ct.CET-ct.UTC1
 ## Time differences in secs
